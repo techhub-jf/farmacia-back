@@ -1,0 +1,6 @@
+version: '3'
+
+tasks:
+  encrypt:
+    cmds:
+      - go run ./tools/encrypt.go {{.CLI_ARGS}}

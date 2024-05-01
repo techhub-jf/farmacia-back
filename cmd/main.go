@@ -11,6 +11,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/techhub-jf/farmacia-back/app"
 	"github.com/techhub-jf/farmacia-back/app/config"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api"
 	"github.com/techhub-jf/farmacia-back/app/gateway/postgres"
@@ -32,16 +33,16 @@ func main() {
 	}
 
 	// Application
-	// appl, err := app.New(cfg, postgresClient)
-	// if err != nil {
-	// 	log.Fatalf("failed to start application: %v", err)
-	// }
+	appl, err := app.New(cfg, postgresClient)
+	if err != nil {
+		log.Fatalf("failed to start application: %v", err)
+	}
 
 	// Server
 	server := &http.Server{
 		Addr:         cfg.Server.Address,
 		BaseContext:  func(_ net.Listener) context.Context { return ctx },
-		Handler:      api.New(cfg).Handler,
+		Handler:      api.New(cfg, appl.UseCase).Handler,
 		ReadTimeout:  cfg.Server.ReadTimeout,
 		WriteTimeout: cfg.Server.WriteTimeout,
 	}

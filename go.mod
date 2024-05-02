@@ -10,6 +10,7 @@ require (
 	github.com/jackc/pgx v3.6.2+incompatible
 	github.com/jackc/pgx/v5 v5.5.5
 	github.com/kelseyhightower/envconfig v1.4.0
+	go.uber.org/mock v0.4.0
 	golang.org/x/crypto v0.17.0
 	golang.org/x/sync v0.7.0
 )

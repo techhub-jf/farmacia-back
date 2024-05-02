@@ -14,5 +14,5 @@ type UseCase struct {
 }
 
 type accountsRepository interface {
-	GetAccountByEmail(ctx context.Context, cpf string) (entity.Account, error)
+	GetAccountByEmail(ctx context.Context, email string) (entity.Account, error)
 }

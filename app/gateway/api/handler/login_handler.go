@@ -42,11 +42,13 @@ func (h *Handler) login() http.HandlerFunc {
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers)
 			return
 		}
+
 		if err = bcrypt.CompareHashAndPassword([]byte(account.Secret), []byte(creds.Password)); err != nil {
 			resp = response.Unauthorized()
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers)
 			return
 		}
+
 		tokenString, err := createToken(account.ID, h.cfg.JwtSecretKey)
 		if err != nil {
 			resp = response.InternalServerError(fmt.Errorf("internal error"))

@@ -87,13 +87,16 @@ func BadRequest(err error, message string) *Response {
 	}
 }
 
-func Unauthorized() *Response {
+func Unauthorized(message string) *Response {
+	if message == "" {
+		message = "user is not authorized to perform this operation"
+	}
 	return &Response{
 		Status: http.StatusUnauthorized,
 		Payload: Error{
 			Type:    string(resource.SrnErrorUnauthorized),
 			Code:    "oops:unauthorized",
-			Message: "user is not authorized to perform this operation",
+			Message: message,
 		},
 		InternalErr: errors.New("unauthorized"),
 	}

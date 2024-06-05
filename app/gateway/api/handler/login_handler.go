@@ -47,12 +47,12 @@ func (h *Handler) login() http.HandlerFunc {
 				rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers)
 				return
 			case erring.ErrLoginUnauthorized:
-				resp = response.Unauthorized()
-				rest.SendJSON(rw, resp.Status, err.Error(), resp.Headers)
+				resp = response.Unauthorized(err.Error())
+				rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers)
 				return
 			case erring.ErrLoginTokenNotCreated:
 				resp = response.InternalServerError(fmt.Errorf("internal error"))
-				rest.SendJSON(rw, resp.Status, err.Error(), resp.Headers)
+				rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers)
 				return
 			}
 		}

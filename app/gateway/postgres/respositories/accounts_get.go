@@ -10,7 +10,8 @@ import (
 )
 
 const getAccountByEmailClause = `
-SELECT 
+SELECT
+name,
 email,
 secret
 FROM account
@@ -28,6 +29,7 @@ func (r *AccountsRepository) GetAccountByEmail(ctx context.Context, email string
 		getAccountByEmailClause,
 		email,
 	).Scan(
+		&account.Name,
 		&account.Email,
 		&account.Secret,
 	)

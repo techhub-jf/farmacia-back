@@ -80,7 +80,7 @@ func BadRequest(err error, message string) *Response {
 		Status: http.StatusBadRequest,
 		Payload: Error{
 			Type:    string(resource.SrnErrorBadRequest),
-			Code:    string(http.StatusBadRequest),
+			Code:    string(rune(http.StatusBadRequest)),
 			Message: message,
 		},
 		InternalErr: err,

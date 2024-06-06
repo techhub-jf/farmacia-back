@@ -1,7 +1,7 @@
 package erring
 
 var (
-	ErrLoginUnauthorized    = NewAppError("login:unauthorized", "Email ou senha incorretos!")
-	ErrLoginUserNotFound    = NewAppError("login:user-not-found", "Usuário não encontrado!")
-	ErrLoginTokenNotCreated = NewAppError("login:token-not-created", "Erro interno.")
+	ErrLoginUnauthorized    = NewAppError("login:unauthorized", "login unauthorized.")
+	ErrLoginUserNotFound    = NewAppError("login:user-not-found", "user not found.")
+	ErrLoginTokenNotCreated = NewAppError("login:token-not-created", "failed to create token.")
 )

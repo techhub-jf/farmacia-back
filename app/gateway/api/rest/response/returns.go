@@ -3,8 +3,6 @@ package response
 import (
 	"errors"
 	"net/http"
-
-	"github.com/techhub-jf/farmacia-back/app/library/resource"
 )
 
 type Response struct { //nolint:errname
@@ -17,8 +15,7 @@ type Response struct { //nolint:errname
 }
 
 type Error struct {
-	Type    string `json:"type"`
-	Code    string `json:"code"`
+	Status  int32  `json:"status"`
 	Message string `json:"message,omitempty"`
 }
 
@@ -79,8 +76,7 @@ func BadRequest(err error, message string) *Response {
 	return &Response{
 		Status: http.StatusBadRequest,
 		Payload: Error{
-			Type:    string(resource.SrnErrorBadRequest),
-			Code:    string(rune(http.StatusBadRequest)),
+			Status:  http.StatusBadRequest,
 			Message: message,
 		},
 		InternalErr: err,
@@ -94,8 +90,7 @@ func Unauthorized(message string) *Response {
 	return &Response{
 		Status: http.StatusUnauthorized,
 		Payload: Error{
-			Type:    string(resource.SrnErrorUnauthorized),
-			Code:    "oops:unauthorized",
+			Status:  http.StatusUnauthorized,
 			Message: message,
 		},
 		InternalErr: errors.New("unauthorized"),
@@ -106,8 +101,7 @@ func NotFound(err error, code, message string) *Response {
 	return &Response{
 		Status: http.StatusNotFound,
 		Payload: Error{
-			Type:    string(resource.SrnErrorNotFound),
-			Code:    code,
+			Status:  http.StatusNotFound,
 			Message: message,
 		},
 		InternalErr: err,
@@ -118,8 +112,7 @@ func MethodNotAllowed() Response {
 	return Response{
 		Status: http.StatusMethodNotAllowed,
 		Payload: Error{
-			Type:    string(resource.SrnErrorMethodNotAllowed),
-			Code:    "oops:method-not-allowed",
+			Status:  http.StatusMethodNotAllowed,
 			Message: "the http method used is not supported by this resource",
 		},
 		InternalErr: errors.New("method not allowed"),
@@ -130,8 +123,7 @@ func InternalServerError(err error) *Response {
 	return &Response{
 		Status: http.StatusInternalServerError,
 		Payload: Error{
-			Type:    string(resource.SrnErrorServerError),
-			Code:    "oops:internal-server-error",
+			Status:  http.StatusInternalServerError,
 			Message: "an unexpected error has occurred",
 		},
 		InternalErr: err,

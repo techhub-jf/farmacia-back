@@ -9,7 +9,6 @@ import (
 type UseCase struct {
 	AppName string
 
-	//Accounts
 	AccountsRepository accountsRepository
 }
 

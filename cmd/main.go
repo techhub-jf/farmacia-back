@@ -11,11 +11,12 @@ import (
 	"os/signal"
 	"syscall"
 
+	"golang.org/x/sync/errgroup"
+
 	"github.com/techhub-jf/farmacia-back/app"
 	"github.com/techhub-jf/farmacia-back/app/config"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api"
 	"github.com/techhub-jf/farmacia-back/app/gateway/postgres"
-	"golang.org/x/sync/errgroup"
 )
 
 func main() {

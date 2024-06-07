@@ -4,10 +4,12 @@ import (
 	"context"
 	"time"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/golang-jwt/jwt"
+
 	"github.com/techhub-jf/farmacia-back/app/domain/entity"
 	"github.com/techhub-jf/farmacia-back/app/domain/erring"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginOutput struct {
@@ -46,14 +48,14 @@ func createToken(user uint, jwtSecret string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"user": user,
-			"exp":  time.Now().Add(time.Hour * 24).Unix(),
+			"exp":  time.Now().Add(time.Hour * 24).Unix(), //nolint:gomnd
 		})
 
 	jwtKey := []byte(jwtSecret)
 
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
-		return "", err
+		return "", err //nolint:wrapcheck
 	}
 
 	return tokenString, nil

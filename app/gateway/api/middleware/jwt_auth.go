@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/golang-jwt/jwt"
+
 	"github.com/techhub-jf/farmacia-back/app/domain/dto"
 )
 
@@ -17,14 +18,16 @@ func ProtectedHandler(jwtSecret string) func(next http.Handler) http.Handler {
 			if tokenString == "" {
 				w.WriteHeader(http.StatusUnauthorized)
 				fmt.Fprint(w, "Missing authorization header")
+
 				return
 			}
 			tokenString = tokenString[len("Bearer "):]
 
-			err, claims := verifyToken(tokenString, jwtSecret)
+			claims, err := verifyToken(tokenString, jwtSecret)
 			if err != nil {
 				w.WriteHeader(http.StatusUnauthorized)
 				fmt.Fprint(w, "Invalid token")
+
 				return
 			}
 			if claims != nil {
@@ -40,18 +43,21 @@ func ProtectedHandler(jwtSecret string) func(next http.Handler) http.Handler {
 	}
 }
 
-func verifyToken(tokenString string, jwtSecret string) (error, jwt.MapClaims) {
+func verifyToken(tokenString string, jwtSecret string) (jwt.MapClaims, error) {
 	secretKey := []byte(jwtSecret)
+
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil
 	})
 	if err != nil {
-		return err, nil
+		return nil, err //nolint:wrapcheck
 	}
 
 	if !token.Valid {
-		return fmt.Errorf("Invalid token"), nil
+		return nil, fmt.Errorf("invalid token")
 	}
-	claims := token.Claims.(jwt.MapClaims)
-	return nil, claims
+
+	claims := token.Claims.(jwt.MapClaims) //nolint:forcetypeassert
+
+	return claims, nil
 }

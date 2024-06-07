@@ -87,6 +87,7 @@ func Unauthorized(message string) *Response {
 	if message == "" {
 		message = "user is not authorized to perform this operation"
 	}
+
 	return &Response{
 		Status: http.StatusUnauthorized,
 		Payload: Error{
@@ -97,7 +98,7 @@ func Unauthorized(message string) *Response {
 	}
 }
 
-func NotFound(err error, code, message string) *Response {
+func NotFound(err error, message string) *Response {
 	return &Response{
 		Status: http.StatusNotFound,
 		Payload: Error{

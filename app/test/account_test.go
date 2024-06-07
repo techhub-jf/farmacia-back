@@ -2,7 +2,7 @@ package test
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"testing"
 
 	"go.uber.org/mock/gomock"
@@ -54,7 +54,7 @@ func TestGetAccountByEmailFail(t *testing.T) {
 
 	email := "teste@email.com"
 
-	mock.EXPECT().GetAccountByEmail(ctx, email).Return(entity.Account{}, fmt.Errorf("user not found"))
+	mock.EXPECT().GetAccountByEmail(ctx, email).Return(entity.Account{}, errors.New("user not found"))
 
 	account, err := mock.GetAccountByEmail(ctx, email)
 

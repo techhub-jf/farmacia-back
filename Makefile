@@ -6,7 +6,7 @@ DOCKER_COMPOSE_FILE_BUILD=build/docker-compose.yml
 DOCKER_COMPOSE_FILE_LOCAL=docker-compose.yml
 
 GOLANGCI_LINT_PATH=$$(go env GOPATH)/bin/golangci-lint
-GOLANGCI_LINT_VERSION=1.54.2
+GOLANGCI_LINT_VERSION=1.59.0
 
 build:
 	docker compose -f $(DOCKER_COMPOSE_FILE_BUILD) -p $(PROJECT) down --remove-orphans

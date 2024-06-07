@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -13,14 +14,16 @@ import (
 func ProtectedHandler(jwtSecret string) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-type", "application/json")
+			w.Header().Set("Content-Type", "application/json")
 			tokenString := r.Header.Get("Authorization")
+
 			if tokenString == "" {
 				w.WriteHeader(http.StatusUnauthorized)
 				fmt.Fprint(w, "Missing authorization header")
 
 				return
 			}
+
 			tokenString = tokenString[len("Bearer "):]
 
 			claims, err := verifyToken(tokenString, jwtSecret)
@@ -30,6 +33,7 @@ func ProtectedHandler(jwtSecret string) func(next http.Handler) http.Handler {
 
 				return
 			}
+
 			if claims != nil {
 				if r.Context().Value(dto.User{}) == nil {
 					user := dto.User{
@@ -38,6 +42,7 @@ func ProtectedHandler(jwtSecret string) func(next http.Handler) http.Handler {
 					r = r.WithContext(context.WithValue(r.Context(), dto.User{}, user))
 				}
 			}
+
 			next.ServeHTTP(w, r)
 		})
 	}
@@ -46,7 +51,7 @@ func ProtectedHandler(jwtSecret string) func(next http.Handler) http.Handler {
 func verifyToken(tokenString string, jwtSecret string) (jwt.MapClaims, error) {
 	secretKey := []byte(jwtSecret)
 
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) { //nolint:revive
 		return secretKey, nil
 	})
 	if err != nil {
@@ -54,7 +59,7 @@ func verifyToken(tokenString string, jwtSecret string) (jwt.MapClaims, error) {
 	}
 
 	if !token.Valid {
-		return nil, fmt.Errorf("invalid token")
+		return nil, errors.New("invalid token")
 	}
 
 	claims := token.Claims.(jwt.MapClaims) //nolint:forcetypeassert

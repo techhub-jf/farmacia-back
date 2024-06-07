@@ -52,7 +52,6 @@ func main() {
 	stopCtx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
 	group, groupCtx := errgroup.WithContext(stopCtx)
 
-	//nolint:wrapcheck
 	group.Go(func() error {
 		log.Printf("starting api server")
 

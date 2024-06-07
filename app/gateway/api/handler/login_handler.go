@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -59,7 +58,7 @@ func (h *Handler) login() http.HandlerFunc {
 
 				return
 			case errors.Is(err, erring.ErrLoginTokenNotCreated):
-				resp = response.InternalServerError(fmt.Errorf("internal error"))
+				resp = response.InternalServerError(errors.New("internal error"))
 				rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 				return
@@ -73,7 +72,7 @@ func (h *Handler) login() http.HandlerFunc {
 		}
 
 		if err != nil {
-			resp = response.InternalServerError(fmt.Errorf("internal error"))
+			resp = response.InternalServerError(errors.New("internal error"))
 			rest.SendJSON(rw, resp.Status, err.Error(), resp.Headers) //nolint:errcheck
 
 			return

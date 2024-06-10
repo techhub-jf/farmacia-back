@@ -11,6 +11,7 @@ import (
 	"github.com/golang-migrate/migrate/v4/source/httpfs"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
+
 	"github.com/techhub-jf/farmacia-back/app/config"
 )
 
@@ -58,7 +59,7 @@ func New(ctx context.Context, config config.Postgres) (*Client, error) {
 		return nil, fmt.Errorf("%s: %w", operation, err)
 	}
 
-	migration.Up()
+	migration.Up() //nolint:errcheck
 
 	srcErr, dbErr := migration.Close()
 	if srcErr != nil {

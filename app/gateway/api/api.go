@@ -36,7 +36,6 @@ func (api *API) setupRouter() {
 
 func (api *API) registerRoutes(router *chi.Mux) {
 	handler.RegisterHealthCheckRoute(router)
-
 	router.Route("/api/v1/farmacia-tech", func(publicRouter chi.Router) {
 		handler.RegisterPublicRoutes(
 			publicRouter,

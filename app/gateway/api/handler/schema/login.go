@@ -1,7 +1,9 @@
-package dto
+package schema
 
 type LoginResponse struct {
 	Token string `json:"token"`
+	Email string `json:"email"`
+	Name  string `json:"name"`
 }
 
 type LoginRequest struct {

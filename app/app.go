@@ -4,18 +4,17 @@ import (
 	"github.com/techhub-jf/farmacia-back/app/config"
 	"github.com/techhub-jf/farmacia-back/app/domain/usecase"
 	"github.com/techhub-jf/farmacia-back/app/gateway/postgres"
-	"github.com/techhub-jf/farmacia-back/app/gateway/postgres/respositories"
+	"github.com/techhub-jf/farmacia-back/app/gateway/postgres/repositories"
 )
 
 type App struct {
 	UseCase *usecase.UseCase
 }
 
-func New(config config.Config, db *postgres.Client) (*App, error) { //nolint: revive
-
+func New(config config.Config, db *postgres.Client) (*App, error) {
 	useCase := &usecase.UseCase{
 		AppName:            config.App.Name,
-		AccountsRepository: respositories.NewAccountsRepository(db),
+		AccountsRepository: repositories.NewAccountsRepository(db),
 	}
 
 	return &App{

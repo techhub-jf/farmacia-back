@@ -6,7 +6,7 @@ import (
 
 type Account struct {
 	ID        uint      `json:"id"`
-	Name      string    `json:"name" validate:"nonzero"`
+	Name      string    `json:"name"       validate:"nonzero"`
 	Email     string    `json:"email"`
 	Secret    string    `json:"-"`
 	CreatedAt time.Time `json:"created_at"`

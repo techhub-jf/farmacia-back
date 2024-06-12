@@ -16,5 +16,5 @@ func main() {
 
 	hashedString, _ := bcrypt.GenerateFromPassword([]byte(*wordPtr), bcrypt.DefaultCost)
 
-	fmt.Println("hash: %s" + string(hashedString)) //nolint:forbidigo
+	fmt.Println("hash: " + string(hashedString)) //nolint:forbidigo
 }

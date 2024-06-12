@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  api:
+    tty: true
+    build: 
+      context: ..
+      dockerfile: ./prod/Dockerfile
+      args:
+        ENVIRONMENT: "${ENVIRONMENT}"
+        DEVELOPMENT: "${DEVELOPMENT}"
+        APP_NAME: "${APP_NAME}"
+        APP_ID: "{APP_ID}"
+        APP_GRACEFUL_SHUTDOWN_TIMEOUT: "${APP_GRACEFUL_SHUTDOWN_TIMEOUT}"
+        DB_HOST: "${DB_HOST}"
+        DB_DRIVER: "${DB_DRIVER}"
+        DB_USER: "${DB_USER}"
+        DB_PASSWORD: "${DB_PASSWORD}"
+        DB_NAME: "${DB_NAME}"
+        DB_PORT: "${DB_PORT}"
+        SERVER_SWAGGER_HOST: "${SERVER_SWAGGER_HOST}"
+        SERVER_ADDRESS: "${SERVER_ADDRESS}"
+        SERVER_READ_TIMEOUT: "${SERVER_READ_TIMEOUT}"
+        SERVER_WRITE_TIMEOUT: "${SERVER_WRITE_TIMEOUT}"
+        SERVER_PORT: "${SERVER_PORT}"
+        JWT_SECRET: "${JWT_SECRET}"
+    ports:
+      - "8000:8000"
+    networks:
+      - farmacia-tech-hub
+    restart: on-failure
+
+networks:
+  farmacia-tech-hub:
+    driver: bridge

@@ -8,6 +8,7 @@ import (
 	"github.com/techhub-jf/farmacia-back/app/config"
 	"github.com/techhub-jf/farmacia-back/app/domain/usecase"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler"
+	"github.com/techhub-jf/farmacia-back/app/gateway/api/middleware"
 )
 
 type API struct {
@@ -29,6 +30,8 @@ func New(cfg config.Config, useCase *usecase.UseCase) *API {
 
 func (api *API) setupRouter() {
 	router := chi.NewRouter()
+
+	router.Use(middleware.CORS)
 
 	api.registerRoutes(router)
 

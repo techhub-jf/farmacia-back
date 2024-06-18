@@ -7,7 +7,7 @@ import (
 	"github.com/techhub-jf/farmacia-back/app/domain/entity"
 )
 
-func (r *AccountsRepository) GetMedicine(ctx context.Context) ([]entity.Medicine, error) {
+func (r *MedicinesRepository) GetMedicines(ctx context.Context) ([]entity.Medicine, error) {
 	const (
 		operation           = "Repository.MedicinesRepository.GetMedicines"
 		getAllMedicinesStmt = `SELECT id, reference, client_id, medicine_id, qty, unit_id, created_at, updated_at, deleted_at FROM medicine`

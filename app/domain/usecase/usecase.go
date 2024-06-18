@@ -18,5 +18,5 @@ type accountsRepository interface {
 	GetAccountByEmail(ctx context.Context, email string) (entity.Account, error)
 }
 type medicinesRepository interface {
-	GetMedicines(ctx context.Context) (entity.Medicine, error)
+	GetMedicines(ctx context.Context) ([]entity.Medicine, error)
 }

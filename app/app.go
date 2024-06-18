@@ -14,8 +14,9 @@ type App struct {
 func New(config config.Config, db *postgres.Client) (*App, error) { //nolint: revive
 
 	useCase := &usecase.UseCase{
-		AppName:            config.App.Name,
-		AccountsRepository: respositories.NewAccountsRepository(db),
+		AppName:             config.App.Name,
+		AccountsRepository:  respositories.NewAccountsRepository(db),
+		MedicinesRepository: respositories.NewMedicinesRepository(db),
 	}
 
 	return &App{

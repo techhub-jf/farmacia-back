@@ -15,6 +15,7 @@ func New(config config.Config, db *postgres.Client) (*App, error) {
 	useCase := &usecase.UseCase{
 		AppName:            config.App.Name,
 		AccountsRepository: repositories.NewAccountsRepository(db),
+		ClientsRepository:  repositories.NewClientsRepository(db),
 	}
 
 	return &App{

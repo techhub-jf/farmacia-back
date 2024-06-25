@@ -18,5 +18,5 @@ type accountsRepository interface {
 }
 
 type clientsRepository interface {
-	GetClients(ctx context.Context) ([]*entity.Client, error)
+	GetClients(ctx context.Context, cqp ClientQueryParametersOutput) ([]*entity.Client, error)
 }

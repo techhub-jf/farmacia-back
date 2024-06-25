@@ -30,7 +30,7 @@ func (r *DeliveriesRepository) GetAll(ctx context.Context, filters PaginationFil
 				reference,
 				qty,
 				created_at
-		FROM delivery
+		FROM deliveries
 		ORDER BY %s %s
 		LIMIT $1 OFFSET $2;	
 	`, filters.Sort_by, filters.Sort_type)

@@ -9,7 +9,7 @@ import (
 	"github.com/techhub-jf/farmacia-back/app/domain/usecase"
 )
 
-var getClientsClause = `
+const getClientsClause = `
 SELECT
 id,
 reference,
@@ -30,7 +30,6 @@ func (r *ClientsRepository) GetClients(
 	const operation = "Repository.ClientsRepository.GetClients"
 
 	finalQuery := fmt.Sprintf(getClientsClause, cqp.SortBy, cqp.SortType)
-	println(finalQuery)
 
 	var offset = (cqp.Page - 1) * cqp.Limit
 	rows, _ := r.Pool.Query(ctx, finalQuery, cqp.Limit, offset)

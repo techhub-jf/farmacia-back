@@ -22,11 +22,13 @@ func (h *Handler) GetDeliveriesSetup(router chi.Router) {
 
 func (h *Handler) GetAllDeliveries() http.HandlerFunc {
 	return func(rw http.ResponseWriter, req *http.Request) {
-		input := usecase.GetDeliveriesInput{
-			Page:     1,
-			SortBy:   "reference",
-			SortType: "ASC",
-		}
+		queryStrings := req.URL.Query()
+
+		input := usecase.GetDeliveriesInput{}
+
+		input.Page = h.readInt(queryStrings, "page", 1)
+		input.SortBy = h.readString(queryStrings, "sortBy", "id")
+		input.SortType = h.readString(queryStrings, "sortType", "ASC")
 
 		deliveries, err := h.useCase.GetDeliveries(req.Context(), input)
 		if err != nil {

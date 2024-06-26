@@ -21,7 +21,7 @@ func (r *DeliveriesRepository) GetAll(ctx context.Context, filters PaginationFil
 	)
 
 	offset := defaultLimit * (filters.Page - 1)
-	args := []interface{}{filters.Page, offset}
+	args := []interface{}{defaultLimit, offset}
 
 	query := fmt.Sprintf(`
 		SELECT 

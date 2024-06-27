@@ -3,8 +3,7 @@ name: Go CI
 on:
   pull_request:
     branches: [ "main" ]
-    paths:
-      - paths: ["**.go", "go.mod", "go.sum"]
+    paths: ["**.go", "go.mod", "go.sum"]
 
 jobs:
   lint:

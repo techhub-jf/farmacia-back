@@ -36,7 +36,6 @@ func (u UseCase) GetClients(ctx context.Context, cqp ClientQueryParametersInput)
 
 	clients, err := u.ClientsRepository.GetClients(ctx, cqpOut)
 	if err != nil {
-		// TODO: customize errors
 		return []ClientOutput{}, erring.ErrGettingClientsFromDB
 	}
 

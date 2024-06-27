@@ -14,7 +14,7 @@ const (
 	clientPattern = "/clients"
 )
 
-func (h *Handler) GetClientsSetup(router chi.Router) {
+func (h *Handler) ListClients(router chi.Router) {
 	router.Route(clientPattern, func(r chi.Router) {
 		r.Get("/", h.GetClients())
 	})

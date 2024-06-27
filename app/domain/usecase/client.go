@@ -4,12 +4,14 @@ import (
 	"context"
 	"strconv"
 	"strings"
+
+	"github.com/techhub-jf/farmacia-back/app/domain/erring"
 )
 
 type ClientOutput struct {
 	ID        uint   `json:"id"`
 	Reference string `json:"reference"`
-	Full_name string `json:"full_name"`
+	FullName  string `json:"full_name"`
 	Cpf       string `json:"cpf"`
 	Rg        string `json:"rg"`
 	Phone     string `json:"phone"`
@@ -31,26 +33,27 @@ type ClientQueryParametersOutput struct {
 
 func (u UseCase) GetClients(ctx context.Context, cqp ClientQueryParametersInput) ([]ClientOutput, error) {
 	cqpOut := validateParameters(cqp)
+
 	clients, err := u.ClientsRepository.GetClients(ctx, cqpOut)
 	if err != nil {
 		// TODO: customize errors
-		return []ClientOutput{}, err
+		return []ClientOutput{}, erring.ErrGettingClientsFromDB
 	}
 
-	var output []ClientOutput
+	clientListOutput := make([]ClientOutput, 0)
 
 	for _, client := range clients {
-		output = append(output, ClientOutput{
+		clientListOutput = append(clientListOutput, ClientOutput{
 			client.ID,
 			client.Reference,
-			client.Full_name,
+			client.FullName,
 			client.Cpf,
 			client.Rg,
 			client.Phone,
 		})
 	}
 
-	return output, nil
+	return clientListOutput, nil
 }
 
 func validateParameters(cqp ClientQueryParametersInput) ClientQueryParametersOutput {
@@ -65,16 +68,16 @@ func validateParameters(cqp ClientQueryParametersInput) ClientQueryParametersOut
 		cqp.SortBy == "cpf" ||
 		cqp.SortBy == "rg" ||
 		cqp.SortBy == "phone" {
-
 		outputSortBy = cqp.SortBy
 	} else {
 		outputSortBy = "id"
 	}
 
 	var outputSortType string
-	cqp.SortType = strings.ToUpper(cqp.SortType)
-	if cqp.SortType == "DESC" {
 
+	cqp.SortType = strings.ToUpper(cqp.SortType)
+
+	if cqp.SortType == "DESC" {
 		outputSortType = cqp.SortType
 	} else {
 		outputSortType = "ASC"

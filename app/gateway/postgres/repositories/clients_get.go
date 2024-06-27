@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
+
 	"github.com/techhub-jf/farmacia-back/app/domain/entity"
 	"github.com/techhub-jf/farmacia-back/app/domain/usecase"
 )
@@ -26,13 +27,15 @@ LIMIT $1 OFFSET $2
 
 func (r *ClientsRepository) GetClients(
 	ctx context.Context, cqp usecase.ClientQueryParametersOutput) (
-	[]*entity.Client, error) {
+	[]*entity.Client, error,
+) {
 	const operation = "Repository.ClientsRepository.GetClients"
 
 	finalQuery := fmt.Sprintf(getClientsClause, cqp.SortBy, cqp.SortType)
 
-	var offset = (cqp.Page - 1) * cqp.Limit
+	offset := (cqp.Page - 1) * cqp.Limit
 	rows, _ := r.Pool.Query(ctx, finalQuery, cqp.Limit, offset)
+
 	clients, err := pgx.CollectRows(rows, pgx.RowToAddrOfStructByNameLax[entity.Client])
 	if err != nil {
 		return []*entity.Client{}, fmt.Errorf("%s -> %w", operation, err)

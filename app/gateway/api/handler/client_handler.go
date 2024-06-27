@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+
 	"github.com/techhub-jf/farmacia-back/app/domain/usecase"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/rest"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/rest/response"
@@ -36,15 +37,20 @@ func (h *Handler) GetClients() http.HandlerFunc {
 		}
 
 		clients, err := h.useCase.GetClients(r.Context(), cqp)
-
 		if err != nil {
-			resp := response.InternalServerError(err)
-			rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+
 			return
 		}
 
 		payload := clients
 		resp := response.OK(payload)
-		rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers)
+
+		err = rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+
+			return
+		}
 	}
 }

@@ -46,5 +46,14 @@ func (api *API) registerRoutes(router *chi.Mux) {
 			api.cfg,
 			api.useCase,
 		)
+
+		publicRouter.Group(func(privateRouter chi.Router) {
+			privateRouter.Use(middleware.ProtectedHandler(api.cfg.JwtSecretKey))
+			handler.RegisterPrivateRoutes(
+				privateRouter,
+				api.cfg,
+				api.useCase,
+			)
+		})
 	})
 }

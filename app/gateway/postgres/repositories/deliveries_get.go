@@ -4,24 +4,17 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/techhub-jf/farmacia-back/app/domain/entity"
+	"github.com/techhub-jf/farmacia-back/app/domain/dto"
+	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 )
 
-const defaultLimit = 10
-
-type PaginationFilters struct {
-	Page      int32
-	Sort_by   string
-	Sort_type string
-}
-
-func (r *DeliveriesRepository) GetAll(ctx context.Context, filters PaginationFilters) ([]*entity.Delivery, error) {
+func (r *DeliveriesRepository) GetAll(ctx context.Context, filters dto.Pagination) ([]*schema.ListDeliveriesResponse, int, error) {
 	const (
 		operation = "Repository.DeliveriesRepository.GetDeliveries"
 	)
 
-	offset := defaultLimit * (filters.Page - 1)
-	args := []interface{}{defaultLimit, offset}
+	offset := filters.ItemsPerPage * (filters.Page - 1)
+	args := []interface{}{filters.ItemsPerPage, offset}
 
 	query := fmt.Sprintf(`
 		SELECT 
@@ -33,7 +26,7 @@ func (r *DeliveriesRepository) GetAll(ctx context.Context, filters PaginationFil
 		FROM deliveries
 		ORDER BY %s %s
 		LIMIT $1 OFFSET $2;	
-	`, filters.Sort_by, filters.Sort_type)
+	`, filters.SortBy, filters.SortType)
 
 	rows, err := r.Client.Pool.Query(
 		ctx,
@@ -41,15 +34,15 @@ func (r *DeliveriesRepository) GetAll(ctx context.Context, filters PaginationFil
 		args...,
 	)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer rows.Close()
 
 	totalRecords := 0
-	deliveries := []*entity.Delivery{}
+	deliveries := []*schema.ListDeliveriesResponse{}
 
 	for rows.Next() {
-		var delivery entity.Delivery
+		var delivery schema.ListDeliveriesResponse
 
 		err := rows.Scan(
 			&totalRecords,
@@ -60,16 +53,14 @@ func (r *DeliveriesRepository) GetAll(ctx context.Context, filters PaginationFil
 		)
 
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 		deliveries = append(deliveries, &delivery)
 	}
 
 	if err = rows.Err(); err != nil {
-		return nil, fmt.Errorf("%s -> %w", operation, err)
+		return nil, 0, fmt.Errorf("%s -> %w", operation, err)
 	}
 
-	print("Total: ", totalRecords)
-
-	return deliveries, nil
+	return deliveries, totalRecords, nil
 }

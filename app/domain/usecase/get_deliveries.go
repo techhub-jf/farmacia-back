@@ -3,34 +3,30 @@ package usecase
 import (
 	"context"
 
-	"github.com/techhub-jf/farmacia-back/app/domain/entity"
-	"github.com/techhub-jf/farmacia-back/app/gateway/postgres/repositories"
+	"github.com/techhub-jf/farmacia-back/app/domain/dto"
+	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 )
 
-type GetDeliveriesOutput struct {
-	Deliveries []*entity.Delivery
-	Meta       string
-}
-
-type GetDeliveriesInput struct {
-	Page     int
-	SortBy   string
-	SortType string
-}
-
-func (u *UseCase) GetDeliveries(ctx context.Context, input GetDeliveriesInput) (GetDeliveriesOutput, error) {
-	args := repositories.PaginationFilters{
-		Page:      int32(input.Page),
-		Sort_by:   input.SortBy,
-		Sort_type: input.SortType,
+func (u *UseCase) GetDeliveries(ctx context.Context, input schema.ListDeliveriesInput) (schema.ListDeliveriesOutput, error) {
+	args := dto.Pagination{
+		Page:         input.Page,
+		SortBy:       input.SortBy,
+		SortType:     input.SortType,
+		ItemsPerPage: input.ItemsPerPage,
 	}
-	deliveries, err := u.DeliveriesRepository.GetAll(ctx, args)
+	deliveries, totalRecords, err := u.DeliveriesRepository.GetAll(ctx, args)
 	if err != nil {
-		return GetDeliveriesOutput{}, err
+		return schema.ListDeliveriesOutput{}, err
 	}
 
-	return GetDeliveriesOutput{
-		Deliveries: deliveries,
-		Meta:       "teste",
+	metadata := schema.Meta{
+		ItemsPerPage: input.ItemsPerPage,
+		CurrentPage:  input.Page,
+		TotalItems:   totalRecords,
+	}
+
+	return schema.ListDeliveriesOutput{
+		Items:    deliveries,
+		Metadata: metadata,
 	}, nil
 }

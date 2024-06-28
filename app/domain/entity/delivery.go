@@ -5,13 +5,13 @@ import (
 )
 
 type Delivery struct {
-	ID         uint      `json:"id"`
-	Reference  string    `json:"reference"`
-	ClientId   uint      `json:"-"`
-	MedicineId uint      `json:"-"`
-	Qty        int32     `json:"qty"`
-	UnitId     uint      `json:"-"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"-"`
-	DeletedAt  time.Time `json:"-"`
+	ID         uint
+	Reference  string
+	ClientId   uint
+	MedicineId uint
+	Qty        int32
+	UnitId     uint
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	DeletedAt  time.Time
 }

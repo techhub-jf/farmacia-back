@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-chi/chi"
 
-	"github.com/techhub-jf/farmacia-back/app/domain/usecase"
+	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/rest"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/rest/response"
 )
@@ -14,25 +14,22 @@ const (
 	deliveryPattern = "/deliveries"
 )
 
-func (h *Handler) GetDeliveriesSetup(router chi.Router) {
+func (h *Handler) ListDeliveriesSetup(router chi.Router) {
 	router.Route(deliveryPattern, func(r chi.Router) {
-		r.Get("/", h.GetAllDeliveries())
+		r.Get("/", h.ListDeliveries())
 	})
 }
 
-func (h *Handler) GetAllDeliveries() http.HandlerFunc {
+func (h *Handler) ListDeliveries() http.HandlerFunc {
 	return func(rw http.ResponseWriter, req *http.Request) {
 		queryStrings := req.URL.Query()
 
-		input := usecase.GetDeliveriesInput{}
+		input := schema.ListDeliveriesInput{}
 
-		input.Page = h.readInt(queryStrings, "page", 1)
-		input.SortBy = h.readString(queryStrings, "sortBy", "id")
-		input.SortType = h.readString(queryStrings, "sortType", "ASC")
+		h.getPaginationParams(queryStrings, &input)
 
 		deliveries, err := h.useCase.GetDeliveries(req.Context(), input)
 		if err != nil {
-			print("error:", err.Error())
 			resp := response.InternalServerError(err)
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers)
 			return

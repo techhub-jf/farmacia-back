@@ -3,8 +3,9 @@ package usecase
 import (
 	"context"
 
+	"github.com/techhub-jf/farmacia-back/app/domain/dto"
 	"github.com/techhub-jf/farmacia-back/app/domain/entity"
-	"github.com/techhub-jf/farmacia-back/app/gateway/postgres/repositories"
+	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 )
 
 type UseCase struct {
@@ -19,5 +20,5 @@ type accountsRepository interface {
 }
 
 type deliveriesRepository interface {
-	GetAll(ctx context.Context, filters repositories.PaginationFilters) ([]*entity.Delivery, error)
+	GetAll(ctx context.Context, filters dto.Pagination) ([]*schema.ListDeliveriesResponse, int, error)
 }

@@ -34,5 +34,5 @@ func RegisterPublicRoutes(
 ) {
 	handler := New(cfg, useCase)
 	handler.LoginSetup(router)
-	handler.GetDeliveriesSetup(router)
+	handler.ListDeliveriesSetup(router)
 }

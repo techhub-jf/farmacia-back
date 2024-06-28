@@ -7,7 +7,7 @@ import (
 	"github.com/jackc/pgx/v5"
 
 	"github.com/techhub-jf/farmacia-back/app/domain/entity"
-	"github.com/techhub-jf/farmacia-back/app/domain/usecase"
+	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 )
 
 const getClientsClause = `
@@ -26,7 +26,7 @@ LIMIT $1 OFFSET $2
 `
 
 func (r *ClientsRepository) GetClients(
-	ctx context.Context, cqp usecase.ClientQueryParametersOutput) (
+	ctx context.Context, cqp schema.ValidatedClientQueryParams) (
 	[]*entity.Client, error,
 ) {
 	const operation = "Repository.ClientsRepository.GetClients"

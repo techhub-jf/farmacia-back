@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/techhub-jf/farmacia-back/app/domain/entity"
+	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 )
 
 type UseCase struct {
@@ -18,5 +19,5 @@ type accountsRepository interface {
 }
 
 type clientsRepository interface {
-	GetClients(ctx context.Context, cqp ClientQueryParametersOutput) ([]*entity.Client, error)
+	GetClients(ctx context.Context, cqp schema.ValidatedClientQueryParams) ([]*entity.Client, error)
 }

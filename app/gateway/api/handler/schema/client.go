@@ -40,7 +40,6 @@ func ValidateParameters(cqp UnvalidatedClientQueryParams) ValidatedClientQueryPa
 		cqp.SortBy == "cpf" ||
 		cqp.SortBy == "rg" ||
 		cqp.SortBy == "phone" {
-
 		outputSortBy = cqp.SortBy
 	} else {
 		outputSortBy = "id"

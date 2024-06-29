@@ -43,4 +43,4 @@ type ListDeliveriesResponse struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-type ListDeliveriesOutput = PaginationResponse[*ListDeliveriesResponse]
+type ListDeliveriesOutput = PaginatedResponse[*ListDeliveriesResponse]

@@ -6,7 +6,7 @@ type Meta struct {
 	TotalItems   int `json:"total_items"`
 }
 
-type PaginationResponse[T any] struct {
+type PaginatedResponse[T any] struct {
 	Items    []T  `json:"items"`
 	Metadata Meta `json:"metadata"`
 }

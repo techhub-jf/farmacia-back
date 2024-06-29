@@ -28,6 +28,14 @@ func (h *Handler) ListDeliveries() http.HandlerFunc {
 
 		h.getPaginationParams(queryStrings, &input)
 
+		err := input.Validate(schema.ValidateListDeliveriesInput)
+		if err != nil {
+			resp := response.BadRequest(err, err.Error())
+			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+
 		deliveries, err := h.useCase.GetDeliveries(req.Context(), input)
 		if err != nil {
 			resp := response.InternalServerError(err)

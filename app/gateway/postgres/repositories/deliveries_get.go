@@ -4,11 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/techhub-jf/farmacia-back/app/domain/dto"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 )
 
-func (r *DeliveriesRepository) GetAll(ctx context.Context, filters dto.Pagination) ([]*schema.ListDeliveriesResponse, int, error) {
+func (r *DeliveriesRepository) GetAll(ctx context.Context, filters schema.Pagination) ([]*schema.ListDeliveriesResponse, int, error) {
 	const (
 		operation = "Repository.DeliveriesRepository.GetAll"
 	)

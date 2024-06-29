@@ -4,12 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/techhub-jf/farmacia-back/app/domain/dto"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 )
 
 func (u *UseCase) GetDeliveries(ctx context.Context, input schema.ListDeliveriesInput) (schema.ListDeliveriesOutput, error) {
-	args := dto.Pagination{
+	args := schema.Pagination{
 		Page:         input.Page,
 		SortBy:       input.SortBy,
 		SortType:     input.SortType,

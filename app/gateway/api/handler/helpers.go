@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/techhub-jf/farmacia-back/app/domain/dto"
+	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 )
 
 // The readString() helper returns a string value from the query string, or the provided
@@ -38,9 +38,9 @@ func (h *Handler) readInt(qs url.Values, key string, defaultValue int) int {
 	return convertedNumber
 }
 
-func (h *Handler) getPaginationParams(qs url.Values, input *dto.Pagination) {
+func (h *Handler) getPaginationParams(qs url.Values, input *schema.Pagination) {
 	input.Page = h.readInt(qs, "page", 1)
 	input.SortBy = h.readString(qs, "sortBy", "id")
 	input.SortType = h.readString(qs, "sortType", "ASC")
-	input.ItemsPerPage = h.readInt(qs, "itemsPerPage", dto.DefaultItemsPerPage)
+	input.ItemsPerPage = h.readInt(qs, "itemsPerPage", schema.DefaultItemsPerPage)
 }

@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/techhub-jf/farmacia-back/app/domain/dto"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
@@ -14,9 +15,10 @@ func (u *UseCase) GetDeliveries(ctx context.Context, input schema.ListDeliveries
 		SortType:     input.SortType,
 		ItemsPerPage: input.ItemsPerPage,
 	}
+
 	deliveries, totalRecords, err := u.DeliveriesRepository.GetAll(ctx, args)
 	if err != nil {
-		return schema.ListDeliveriesOutput{}, err
+		return schema.ListDeliveriesOutput{}, fmt.Errorf("error listing deliveries: %w", err)
 	}
 
 	metadata := schema.Meta{

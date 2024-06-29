@@ -31,12 +31,13 @@ func (h *Handler) ListDeliveries() http.HandlerFunc {
 		deliveries, err := h.useCase.GetDeliveries(req.Context(), input)
 		if err != nil {
 			resp := response.InternalServerError(err)
-			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers)
+			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
 			return
 		}
 
 		payload := deliveries
 		resp := response.OK(payload)
-		rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers)
+		rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 	}
 }

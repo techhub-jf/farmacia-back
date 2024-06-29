@@ -10,7 +10,7 @@ import (
 
 func (r *DeliveriesRepository) GetAll(ctx context.Context, filters dto.Pagination) ([]*schema.ListDeliveriesResponse, int, error) {
 	const (
-		operation = "Repository.DeliveriesRepository.GetDeliveries"
+		operation = "Repository.DeliveriesRepository.GetAll"
 	)
 
 	offset := filters.ItemsPerPage * (filters.Page - 1)
@@ -34,7 +34,7 @@ func (r *DeliveriesRepository) GetAll(ctx context.Context, filters dto.Paginatio
 		args...,
 	)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, fmt.Errorf("%s: %w", operation, err)
 	}
 	defer rows.Close()
 
@@ -51,10 +51,10 @@ func (r *DeliveriesRepository) GetAll(ctx context.Context, filters dto.Paginatio
 			&delivery.Qty,
 			&delivery.CreatedAt,
 		)
-
 		if err != nil {
-			return nil, 0, err
+			return nil, 0, fmt.Errorf("%s: %w", operation, err)
 		}
+
 		deliveries = append(deliveries, &delivery)
 	}
 

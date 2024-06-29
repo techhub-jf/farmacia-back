@@ -12,7 +12,7 @@ type ListDeliveriesResponse struct {
 	ID        uint      `json:"id"`
 	Reference string    `json:"reference"`
 	Qty       int32     `json:"qty"`
-	UnitId    uint      `json:"-"`
+	UnitID    uint      `json:"-"`
 	CreatedAt time.Time `json:"created_at"`
 }
 

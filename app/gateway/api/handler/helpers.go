@@ -7,8 +7,6 @@ import (
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 )
 
-// The readString() helper returns a string value from the query string, or the provided
-// default value if no matching key could be found.
 func (h *Handler) readString(qs url.Values, key string, defaultValue string) string {
 	str := qs.Get(key)
 
@@ -19,10 +17,6 @@ func (h *Handler) readString(qs url.Values, key string, defaultValue string) str
 	return str
 }
 
-// The readInt() helper reads a string value from the query string and converts it to an
-// integer before returning. If no matching key could be found it returns the provided
-// default value. If the value couldn't be converted to an integer, then we return
-// the default value.
 func (h *Handler) readInt(qs url.Values, key string, defaultValue int) int {
 	str := qs.Get(key)
 

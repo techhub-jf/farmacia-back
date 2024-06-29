@@ -26,12 +26,14 @@ func (h *Handler) GetClients() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		values := r.URL.Query()
 
-		cqp := schema.UnvalidatedClientQueryParams{
-			Page:     values.Get("page"),
-			SortBy:   values.Get("sort_by"),
-			SortType: values.Get("sort_type"),
-			Limit:    values.Get("limit"),
-		}
+		page := values.Get("page")
+		sortBy := values.Get("sort_by")
+		sortType := values.Get("sort_type")
+		limit := values.Get("limit")
+
+		var cqp schema.ClientQueryParams
+
+		cqp.ValidateParameters(page, sortBy, sortType, limit)
 
 		var resp *response.Response
 

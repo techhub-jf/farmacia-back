@@ -14,55 +14,46 @@ type ClientResponse struct {
 	Phone     string `json:"phone"`
 }
 
-type UnvalidatedClientQueryParams struct {
-	Page     string
-	SortBy   string
-	SortType string
-	Limit    string
-}
-
-type ValidatedClientQueryParams struct {
+type ClientQueryParams struct {
 	Page     uint64
 	SortBy   string
 	SortType string
 	Limit    uint64
 }
 
-func ValidateParameters(cqp UnvalidatedClientQueryParams) ValidatedClientQueryParams {
-	outputPage, err := strconv.ParseUint(cqp.Page, 10, 32)
+func (cqp *ClientQueryParams) ValidateParameters(page string, sortBy string, sortType string, limit string) {
+	outputPage, err := strconv.ParseUint(page, 10, 32)
 	if err != nil {
 		outputPage = 1
 	}
 
 	var outputSortBy string
-	if cqp.SortBy == "reference" ||
-		cqp.SortBy == "full_name" ||
-		cqp.SortBy == "cpf" ||
-		cqp.SortBy == "rg" ||
-		cqp.SortBy == "phone" {
-		outputSortBy = cqp.SortBy
+	if sortBy == "reference" ||
+		sortBy == "full_name" ||
+		sortBy == "cpf" ||
+		sortBy == "rg" ||
+		sortBy == "phone" {
+		outputSortBy = sortBy
 	} else {
 		outputSortBy = "id"
 	}
 
-	cqp.SortType = strings.ToUpper(cqp.SortType)
+	sortType = strings.ToUpper(sortType)
 
 	var outputSortType string
-	if cqp.SortType == "DESC" {
-		outputSortType = cqp.SortType
+	if sortType == "DESC" {
+		outputSortType = sortType
 	} else {
 		outputSortType = "ASC"
 	}
 
-	outputLimit, err := strconv.ParseUint(cqp.Limit, 10, 32)
+	outputLimit, err := strconv.ParseUint(limit, 10, 32)
 	if err != nil {
 		outputLimit = 10
 	}
 
-	return ValidatedClientQueryParams{
-		Page:     outputPage,
-		SortBy:   outputSortBy,
-		SortType: outputSortType,
-		Limit:    outputLimit,
-	}
+	cqp.Page = outputPage
+	cqp.SortBy = outputSortBy
+	cqp.SortType = outputSortType
+	cqp.Limit = outputLimit
 }

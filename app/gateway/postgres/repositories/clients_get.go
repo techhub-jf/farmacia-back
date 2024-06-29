@@ -26,7 +26,7 @@ LIMIT $1 OFFSET $2
 `
 
 func (r *ClientsRepository) GetClients(
-	ctx context.Context, cqp schema.ValidatedClientQueryParams) (
+	ctx context.Context, cqp schema.ClientQueryParams) (
 	[]*entity.Client, error,
 ) {
 	const operation = "Repository.ClientsRepository.GetClients"

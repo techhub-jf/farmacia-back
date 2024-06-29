@@ -7,10 +7,8 @@ import (
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 )
 
-func (u UseCase) GetClients(ctx context.Context, cqp schema.UnvalidatedClientQueryParams) ([]schema.ClientResponse, error) {
-	cqpOut := schema.ValidateParameters(cqp)
-
-	clients, err := u.ClientsRepository.GetClients(ctx, cqpOut)
+func (u UseCase) GetClients(ctx context.Context, cqp schema.ClientQueryParams) ([]schema.ClientResponse, error) {
+	clients, err := u.ClientsRepository.GetClients(ctx, cqp)
 	if err != nil {
 		return []schema.ClientResponse{}, erring.ErrGettingClientsFromDB
 	}

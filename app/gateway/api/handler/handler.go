@@ -34,6 +34,7 @@ func RegisterPublicRoutes(
 ) {
 	handler := New(cfg, useCase)
 	handler.LoginSetup(router)
+	handler.ListClients(router)
 }
 
 func RegisterPrivateRoutes(

@@ -25,8 +25,7 @@ func ValidateListDeliveriesRequest(input ListDeliveriesRequest) error {
 		return errors.New("itemsPerPage must be between 1 and 100")
 	}
 
-	_, found := validSearchFields[input.SortBy]
-	if !found {
+	if _, found := validSearchFields[input.SortBy]; !found {
 		return errors.New("invalid sortBy param")
 	}
 

@@ -20,7 +20,7 @@ type accountsRepository interface {
 }
 
 type deliveriesRepository interface {
-	GetAll(ctx context.Context, filters schema.Pagination) ([]*schema.ListDeliveriesResponse, int, error)
+	GetAll(ctx context.Context, filters schema.Pagination) ([]schema.ListDeliveriesResponse, int, error)
 }
 
 type clientsRepository interface {

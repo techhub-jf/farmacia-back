@@ -7,7 +7,7 @@ import (
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 )
 
-func (r *DeliveriesRepository) GetAll(ctx context.Context, filters schema.Pagination) ([]*schema.ListDeliveriesResponse, int, error) {
+func (r *DeliveriesRepository) GetAll(ctx context.Context, filters schema.Pagination) ([]schema.ListDeliveriesResponse, int, error) {
 	const (
 		operation = "Repository.DeliveriesRepository.GetAll"
 	)
@@ -38,7 +38,7 @@ func (r *DeliveriesRepository) GetAll(ctx context.Context, filters schema.Pagina
 	defer rows.Close()
 
 	totalRecords := 0
-	deliveries := []*schema.ListDeliveriesResponse{}
+	deliveries := []schema.ListDeliveriesResponse{}
 
 	for rows.Next() {
 		var delivery schema.ListDeliveriesResponse
@@ -54,7 +54,7 @@ func (r *DeliveriesRepository) GetAll(ctx context.Context, filters schema.Pagina
 			return nil, 0, fmt.Errorf("%s: %w", operation, err)
 		}
 
-		deliveries = append(deliveries, &delivery)
+		deliveries = append(deliveries, delivery)
 	}
 
 	if err = rows.Err(); err != nil {

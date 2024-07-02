@@ -4,30 +4,41 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/techhub-jf/farmacia-back/app/domain/dto"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 )
 
-func (u *UseCase) GetDeliveries(ctx context.Context, input schema.ListDeliveriesInput) (schema.ListDeliveriesOutput, error) {
-	args := schema.Pagination{
-		Page:         input.Page,
-		SortBy:       input.SortBy,
-		SortType:     input.SortType,
-		ItemsPerPage: input.ItemsPerPage,
+type GetDeliveriesInput struct {
+	Pagination dto.Pagination
+}
+
+type GetDeliveriesOutput struct {
+	schema.ListDeliveriesOutput
+}
+
+func (u *UseCase) GetDeliveries(ctx context.Context, input GetDeliveriesInput) (GetDeliveriesOutput, error) {
+	args := dto.Pagination{
+		Page:         input.Pagination.Page,
+		SortBy:       input.Pagination.SortBy,
+		SortType:     input.Pagination.SortType,
+		ItemsPerPage: input.Pagination.ItemsPerPage,
 	}
 
-	deliveries, totalRecords, err := u.DeliveriesRepository.GetAll(ctx, args)
+	deliveries, totalRecords, err := u.DeliveriesRepository.ListAll(ctx, args)
 	if err != nil {
-		return schema.ListDeliveriesOutput{}, fmt.Errorf("error listing deliveries: %w", err)
+		return GetDeliveriesOutput{}, fmt.Errorf("error listing deliveries: %w", err)
 	}
 
 	metadata := schema.Meta{
-		ItemsPerPage: input.ItemsPerPage,
-		CurrentPage:  input.Page,
+		ItemsPerPage: input.Pagination.ItemsPerPage,
+		CurrentPage:  input.Pagination.Page,
 		TotalItems:   totalRecords,
 	}
 
-	return schema.ListDeliveriesOutput{
-		Items:    deliveries,
-		Metadata: metadata,
+	return GetDeliveriesOutput{
+		schema.ListDeliveriesOutput{
+			Items:    deliveries,
+			Metadata: metadata,
+		},
 	}, nil
 }

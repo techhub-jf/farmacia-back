@@ -3,9 +3,11 @@ package schema
 import (
 	"errors"
 	"time"
+
+	"github.com/techhub-jf/farmacia-back/app/domain/dto"
 )
 
-type ListDeliveriesInput = Pagination
+type ListDeliveriesRequest = dto.Pagination
 
 var validSearchFields = map[string]bool{
 	"reference":  true,
@@ -14,7 +16,7 @@ var validSearchFields = map[string]bool{
 	"created_at": true,
 }
 
-func ValidateListDeliveriesInput(input ListDeliveriesInput) error {
+func ValidateListDeliveriesRequest(input ListDeliveriesRequest) error {
 	if input.Page < 1 {
 		return errors.New("page must be greater than 0")
 	}

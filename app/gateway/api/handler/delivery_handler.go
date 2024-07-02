@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-chi/chi"
 
+	"github.com/techhub-jf/farmacia-back/app/domain/usecase"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/rest"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/rest/response"
@@ -24,11 +25,11 @@ func (h *Handler) ListDeliveries() http.HandlerFunc {
 	return func(rw http.ResponseWriter, req *http.Request) {
 		queryStrings := req.URL.Query()
 
-		input := schema.ListDeliveriesInput{}
+		input := schema.ListDeliveriesRequest{}
 
 		h.getPaginationParams(queryStrings, &input)
 
-		err := input.Validate(schema.ValidateListDeliveriesInput)
+		err := input.Validate(schema.ValidateListDeliveriesRequest)
 		if err != nil {
 			resp := response.BadRequest(err, err.Error())
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
@@ -36,7 +37,9 @@ func (h *Handler) ListDeliveries() http.HandlerFunc {
 			return
 		}
 
-		deliveries, err := h.useCase.GetDeliveries(req.Context(), input)
+		deliveries, err := h.useCase.GetDeliveries(req.Context(), usecase.GetDeliveriesInput{
+			Pagination: input,
+		})
 		if err != nil {
 			resp := response.InternalServerError(err)
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck

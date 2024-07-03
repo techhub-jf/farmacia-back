@@ -57,5 +57,6 @@ func ConvertDeliveriesToListResponse(deliveries []entity.Delivery) []ListDeliver
 			CreatedAt: delivery.CreatedAt,
 		})
 	}
+
 	return parsedDeliveries
 }

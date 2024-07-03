@@ -21,7 +21,7 @@ type accountsRepository interface {
 }
 
 type deliveriesRepository interface {
-	ListAll(ctx context.Context, filters dto.Pagination) ([]schema.ListDeliveriesResponse, int, error)
+	ListAll(ctx context.Context, filters dto.Pagination) ([]entity.Delivery, int, error)
 }
 
 type clientsRepository interface {

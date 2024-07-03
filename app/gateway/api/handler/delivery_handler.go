@@ -37,7 +37,7 @@ func (h *Handler) ListDeliveries() http.HandlerFunc {
 			return
 		}
 
-		deliveries, err := h.useCase.GetDeliveries(req.Context(), usecase.GetDeliveriesInput{
+		data, err := h.useCase.GetDeliveries(req.Context(), usecase.GetDeliveriesInput{
 			Pagination: input,
 		})
 		if err != nil {
@@ -47,7 +47,18 @@ func (h *Handler) ListDeliveries() http.HandlerFunc {
 			return
 		}
 
-		payload := deliveries
+		metadata := schema.Meta{
+			ItemsPerPage: input.ItemsPerPage,
+			CurrentPage:  input.Page,
+			TotalItems:   data.TotalDeliveries,
+		}
+
+		deliveries := schema.ConvertDeliveriesToListResponse(data.Deliveries)
+
+		payload := schema.ListDeliveriesOutput{
+			Items:    deliveries,
+			Metadata: metadata,
+		}
 		resp := response.OK(payload)
 		rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 	}

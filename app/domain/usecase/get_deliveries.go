@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/techhub-jf/farmacia-back/app/domain/dto"
-	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
+	"github.com/techhub-jf/farmacia-back/app/domain/entity"
 )
 
 type GetDeliveriesInput struct {
@@ -13,32 +13,18 @@ type GetDeliveriesInput struct {
 }
 
 type GetDeliveriesOutput struct {
-	schema.ListDeliveriesOutput
+	Deliveries      []entity.Delivery
+	TotalDeliveries int
 }
 
 func (u *UseCase) GetDeliveries(ctx context.Context, input GetDeliveriesInput) (GetDeliveriesOutput, error) {
-	args := dto.Pagination{
-		Page:         input.Pagination.Page,
-		SortBy:       input.Pagination.SortBy,
-		SortType:     input.Pagination.SortType,
-		ItemsPerPage: input.Pagination.ItemsPerPage,
-	}
-
-	deliveries, totalRecords, err := u.DeliveriesRepository.ListAll(ctx, args)
+	deliveries, totalRecords, err := u.DeliveriesRepository.ListAll(ctx, input.Pagination)
 	if err != nil {
 		return GetDeliveriesOutput{}, fmt.Errorf("error listing deliveries: %w", err)
 	}
 
-	metadata := schema.Meta{
-		ItemsPerPage: input.Pagination.ItemsPerPage,
-		CurrentPage:  input.Pagination.Page,
-		TotalItems:   totalRecords,
-	}
-
 	return GetDeliveriesOutput{
-		schema.ListDeliveriesOutput{
-			Items:    deliveries,
-			Metadata: metadata,
-		},
+		Deliveries:      deliveries,
+		TotalDeliveries: totalRecords,
 	}, nil
 }

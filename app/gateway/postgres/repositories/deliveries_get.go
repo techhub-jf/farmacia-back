@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	"github.com/techhub-jf/farmacia-back/app/domain/dto"
-	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
+	"github.com/techhub-jf/farmacia-back/app/domain/entity"
 )
 
-func (r *DeliveriesRepository) ListAll(ctx context.Context, filters dto.Pagination) ([]schema.ListDeliveriesResponse, int, error) {
+func (r *DeliveriesRepository) ListAll(ctx context.Context, filters dto.Pagination) ([]entity.Delivery, int, error) {
 	const (
 		operation = "Repository.DeliveriesRepository.ListAll"
 	)
@@ -39,10 +39,10 @@ func (r *DeliveriesRepository) ListAll(ctx context.Context, filters dto.Paginati
 	defer rows.Close()
 
 	totalRecords := 0
-	deliveries := []schema.ListDeliveriesResponse{}
+	deliveries := []entity.Delivery{}
 
 	for rows.Next() {
-		var delivery schema.ListDeliveriesResponse
+		var delivery entity.Delivery
 
 		err := rows.Scan(
 			&totalRecords,

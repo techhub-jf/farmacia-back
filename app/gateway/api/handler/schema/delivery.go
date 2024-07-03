@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/techhub-jf/farmacia-back/app/domain/dto"
+	"github.com/techhub-jf/farmacia-back/app/domain/entity"
 )
 
 type ListDeliveriesRequest = dto.Pagination
@@ -40,8 +41,21 @@ type ListDeliveriesResponse struct {
 	ID        uint      `json:"id"`
 	Reference string    `json:"reference"`
 	Qty       int32     `json:"qty"`
-	UnitID    uint      `json:"-"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
 type ListDeliveriesOutput = PaginatedResponse[ListDeliveriesResponse]
+
+func ConvertDeliveriesToListResponse(deliveries []entity.Delivery) []ListDeliveriesResponse {
+	parsedDeliveries := []ListDeliveriesResponse{}
+
+	for _, delivery := range deliveries {
+		parsedDeliveries = append(parsedDeliveries, ListDeliveriesResponse{
+			ID:        delivery.ID,
+			Reference: delivery.Reference,
+			Qty:       delivery.Qty,
+			CreatedAt: delivery.CreatedAt,
+		})
+	}
+	return parsedDeliveries
+}

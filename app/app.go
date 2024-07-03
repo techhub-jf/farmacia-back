@@ -13,9 +13,10 @@ type App struct {
 
 func New(config config.Config, db *postgres.Client) (*App, error) {
 	useCase := &usecase.UseCase{
-		AppName:            config.App.Name,
-		AccountsRepository: repositories.NewAccountsRepository(db),
-		ClientsRepository:  repositories.NewClientsRepository(db),
+		AppName:              config.App.Name,
+		AccountsRepository:   repositories.NewAccountsRepository(db),
+		ClientsRepository:    repositories.NewClientsRepository(db),
+		DeliveriesRepository: repositories.NewDeliveriesRepository(db),
 	}
 
 	return &App{

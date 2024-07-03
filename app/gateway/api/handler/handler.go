@@ -36,3 +36,12 @@ func RegisterPublicRoutes(
 	handler.LoginSetup(router)
 	handler.ListClients(router)
 }
+
+func RegisterPrivateRoutes(
+	router chi.Router,
+	cfg config.Config,
+	useCase *usecase.UseCase,
+) {
+	handler := New(cfg, useCase)
+	handler.ListDeliveriesSetup(router)
+}

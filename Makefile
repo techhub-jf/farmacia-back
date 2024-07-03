@@ -1,5 +1,6 @@
-PROJECT ?= farmacia-tech-hub
+include .env
 
+PROJECT ?= farmacia-tech-hub
 
 DOCKER_COMPOSE_FILE_BUILD=build/docker-compose.yml
 
@@ -7,6 +8,8 @@ DOCKER_COMPOSE_FILE_LOCAL=docker-compose.yml
 
 GOLANGCI_LINT_PATH=$$(go env GOPATH)/bin/golangci-lint
 GOLANGCI_LINT_VERSION=1.59.0
+
+MIGRATION_FOLDER_PATH=app/gateway/postgres/migrations
 
 build:
 	docker compose -f $(DOCKER_COMPOSE_FILE_BUILD) -p $(PROJECT) down --remove-orphans
@@ -31,3 +34,13 @@ endif
 
 encrypt:
 	go run ./tools/encrypt.go --word=$(filter-out $@,$(MAKECMDGOALS))
+
+migrate-up:
+	migrate -path $(MIGRATION_FOLDER_PATH) -database "postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable" up
+
+migrate-down:
+	migrate -path $(MIGRATION_FOLDER_PATH) -database "postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable" down
+
+migrate-new:
+	@echo "==> Creating new migration files for ${name}..."
+	migrate create -ext sql -dir $(MIGRATION_FOLDER_PATH) -seq ${name}

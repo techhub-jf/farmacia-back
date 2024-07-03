@@ -3,7 +3,22 @@ package schema
 import (
 	"strconv"
 	"strings"
+	"time"
 )
+
+type CreateClientRequest struct {
+	FullName      string    `json:"full_name"`
+	Birth         time.Time `json:"birth"`
+	Cpf           string    `json:"cpf"`
+	Rg            string    `json:"rg"`
+	Phone         string    `json:"phone"`
+	Cep           string    `json:"cep"`
+	Address       string    `json:"address"`
+	AddressNumber string    `json:"address_number"`
+	District      string    `json:"district"`
+	City          string    `json:"city"`
+	State         string    `json:"state"`
+}
 
 type ClientResponse struct {
 	ID        uint   `json:"id"`

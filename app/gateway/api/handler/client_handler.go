@@ -13,16 +13,30 @@ import (
 )
 
 const (
-	clientPattern = "/clients"
+	ClientPattern = "/client"
 )
 
-func (h *Handler) ListClients(router chi.Router) {
-	router.Route(clientPattern, func(r chi.Router) {
-		r.Get("/", h.GetClients())
+func (h *Handler) ClientRoutes(router chi.Router) {
+	router.Route(ClientPattern, func(r chi.Router) {
+		r.Get("/list", h.ListClients())
+		r.Post("/create", h.CreateClient())
+		r.Put("/update/{id}", h.UpdateClient())
 	})
 }
 
-func (h *Handler) GetClients() http.HandlerFunc {
+func (h *Handler) CreateClient() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		println("create client")
+	}
+}
+
+func (h *Handler) UpdateClient() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		println("update client")
+	}
+}
+
+func (h *Handler) ListClients() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		values := r.URL.Query()
 

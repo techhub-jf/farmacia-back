@@ -17,7 +17,7 @@ func New(config config.Config, db *postgres.Client) (*App, error) {
 		AccountsRepository:   repositories.NewAccountsRepository(db),
 		ClientsRepository:    repositories.NewClientsRepository(db),
 		DeliveriesRepository: repositories.NewDeliveriesRepository(db),
-		MedicinesRepository:  respositories.NewMedicinesRepository(db),
+		MedicinesRepository:  repositories.NewMedicinesRepository(db),
 	}
 
 	return &App{

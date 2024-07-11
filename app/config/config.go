@@ -22,10 +22,7 @@ type Config struct {
 	App    App
 	Server Server
 
-	//DATABASE
-	Postgres Postgres
-
-	//AUTH KEY
+	Postgres     Postgres
 	JwtSecretKey string `required:"true" envconfig:"JWT_SECRET"`
 }
 
@@ -43,11 +40,11 @@ type Server struct {
 }
 
 type Postgres struct {
-	Host         string `required:"true" envconfig:"DB_HOST" 			default:"localhost"`
-	User         string `required:"true" envconfig:"DB_USER"			default:"postgres"`
-	Password     string `required:"true" envconfig:"DB_PASSWORD"		default:"postgres"`
-	DatabaseName string `required:"true" envconfig:"DB_NAME" 			default:"digitalbank"`
-	Port         string `required:"true" envconfig:"DB_PORT"			default:"5432"`
+	Host         string `envconfig:"DB_HOST"     default:"localhost"`
+	User         string `envconfig:"DB_USER"     default:"postgres"`
+	Password     string `envconfig:"DB_PASSWORD" default:"postgres"`
+	DatabaseName string `envconfig:"DB_NAME"     default:"digitalbank"`
+	Port         string `envconfig:"DB_PORT"     default:"5432"`
 }
 
 func New() (Config, error) {
@@ -59,5 +56,6 @@ func New() (Config, error) {
 	if err != nil {
 		return Config{}, fmt.Errorf("%s -> %w", operation, err)
 	}
+
 	return cfg, nil
 }

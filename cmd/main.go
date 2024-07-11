@@ -11,11 +11,12 @@ import (
 	"os/signal"
 	"syscall"
 
+	"golang.org/x/sync/errgroup"
+
 	"github.com/techhub-jf/farmacia-back/app"
 	"github.com/techhub-jf/farmacia-back/app/config"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api"
 	"github.com/techhub-jf/farmacia-back/app/gateway/postgres"
-	"golang.org/x/sync/errgroup"
 )
 
 func main() {
@@ -51,7 +52,6 @@ func main() {
 	stopCtx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
 	group, groupCtx := errgroup.WithContext(stopCtx)
 
-	//nolint:wrapcheck
 	group.Go(func() error {
 		log.Printf("starting api server")
 

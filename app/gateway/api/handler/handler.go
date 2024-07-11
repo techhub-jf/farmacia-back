@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+
 	"github.com/techhub-jf/farmacia-back/app/config"
 	"github.com/techhub-jf/farmacia-back/app/domain/usecase"
 )
@@ -33,5 +34,15 @@ func RegisterPublicRoutes(
 ) {
 	handler := New(cfg, useCase)
 	handler.LoginSetup(router)
+	handler.ListClients(router)
+}
+
+func RegisterPrivateRoutes(
+	router chi.Router,
+	cfg config.Config,
+	useCase *usecase.UseCase,
+) {
+	handler := New(cfg, useCase)
+	handler.ListDeliveriesSetup(router)
 	handler.GetMedicinesSetup(router)
 }

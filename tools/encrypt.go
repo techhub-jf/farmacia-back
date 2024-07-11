@@ -12,10 +12,9 @@ func main() {
 
 	flag.Parse()
 
-	fmt.Println("word:", *wordPtr)
+	fmt.Println("word: " + *wordPtr) //nolint:forbidigo
 
-	hashedString, _ := bcrypt.GenerateFromPassword([]byte(*wordPtr), 8)
+	hashedString, _ := bcrypt.GenerateFromPassword([]byte(*wordPtr), bcrypt.DefaultCost)
 
-	fmt.Println("hash:", string(hashedString))
-
+	fmt.Println("hash: " + string(hashedString)) //nolint:forbidigo
 }

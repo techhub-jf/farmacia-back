@@ -1,4 +1,4 @@
-package respositories
+package repositories
 
 import "github.com/techhub-jf/farmacia-back/app/gateway/postgres"
 

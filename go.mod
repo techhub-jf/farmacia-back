@@ -3,7 +3,6 @@ module github.com/techhub-jf/farmacia-back
 go 1.22
 
 require (
-	github.com/bitly/go-simplejson v0.5.1
 	github.com/go-chi/chi v1.5.5
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang-migrate/migrate/v4 v4.17.0

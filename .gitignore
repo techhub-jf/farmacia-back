@@ -24,4 +24,5 @@ go.work
 
 bin
 
+__debug_bin*
 .idea

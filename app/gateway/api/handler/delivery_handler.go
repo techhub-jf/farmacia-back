@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -15,9 +16,10 @@ const (
 	deliveryPattern = "/deliveries"
 )
 
-func (h *Handler) ListDeliveriesSetup(router chi.Router) {
+func (h *Handler) DeliveriesSetup(router chi.Router) {
 	router.Route(deliveryPattern, func(r chi.Router) {
 		r.Get("/", h.ListDeliveries())
+		r.Post("/", h.CreateDelivery())
 	})
 }
 
@@ -60,6 +62,51 @@ func (h *Handler) ListDeliveries() http.HandlerFunc {
 			Metadata: metadata,
 		}
 		resp := response.OK(payload)
+		rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+	}
+}
+
+func (h *Handler) CreateDelivery() http.HandlerFunc {
+	return func(rw http.ResponseWriter, req *http.Request) {
+		deliveryBody := &schema.CreateDeliveryRequest{}
+		err := json.NewDecoder(req.Body).Decode(deliveryBody)
+
+		var resp *response.Response
+
+		if err != nil {
+			resp = response.InternalServerError(err)
+			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+
+		err = schema.ValidateCreateDeliveryRequest(deliveryBody)
+		if err != nil {
+			resp := response.BadRequest(err, err.Error())
+			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+
+		useCaseInput := usecase.CreateDeliveryInput{}
+		useCaseInput.Delivery.Qty = deliveryBody.Qty
+		useCaseInput.Delivery.Reference = deliveryBody.Reference
+		useCaseInput.Delivery.MedicineID = deliveryBody.MedicineID
+		useCaseInput.Delivery.UnitID = deliveryBody.UnitID
+		useCaseInput.Delivery.ClientID = deliveryBody.ClientID
+
+		data, err := h.useCase.CreateDelivery(req.Context(), useCaseInput)
+		if err != nil {
+			resp := response.InternalServerError(err)
+			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+
+		payload := schema.CreateDeliveryResponse{}
+		payload.Delivery = schema.ConvertDeliveryToCreateResponse(data.Delivery)
+
+		resp = response.OK(payload)
 		rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 	}
 }

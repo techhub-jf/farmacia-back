@@ -33,6 +33,7 @@ func (r *DeliveriesRepository) Create(ctx context.Context, input usecase.CreateD
 	delivery := entity.Delivery{}
 	err := row.Scan(&delivery.ID,
 		&delivery.Reference, &delivery.CreatedAt)
+
 	if err != nil {
 		return entity.Delivery{}, fmt.Errorf("%s: %w", operation, err)
 	}

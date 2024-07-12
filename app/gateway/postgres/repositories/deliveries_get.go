@@ -39,6 +39,7 @@ func (r *DeliveriesRepository) ListAll(ctx context.Context, filters dto.Paginati
 	defer rows.Close()
 
 	totalRecords := 0
+
 	var deliveries []entity.Delivery
 
 	for rows.Next() {

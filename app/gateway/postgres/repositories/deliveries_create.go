@@ -12,6 +12,7 @@ func (r *DeliveriesRepository) Create(ctx context.Context, input usecase.CreateD
 	const (
 		operation = "Repository.DeliveriesRepository.Create"
 	)
+
 	query := `
 		INSERT INTO deliveries (reference,  client_id,  medicine_id, qty, unit_id)
 		VALUES ($1, $2, $3, $4, $5)

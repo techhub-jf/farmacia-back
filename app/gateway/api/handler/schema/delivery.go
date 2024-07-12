@@ -95,7 +95,7 @@ type ListDeliveriesResponse struct {
 type ListDeliveriesOutput = PaginatedResponse[ListDeliveriesResponse]
 
 func ConvertDeliveriesToListResponse(deliveries []entity.Delivery) []ListDeliveriesResponse {
-	var parsedDeliveries []ListDeliveriesResponse
+	parsedDeliveries := []ListDeliveriesResponse{}
 
 	for _, delivery := range deliveries {
 		parsedDeliveries = append(parsedDeliveries, ListDeliveriesResponse{

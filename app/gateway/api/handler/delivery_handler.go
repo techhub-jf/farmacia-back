@@ -106,7 +106,7 @@ func (h *Handler) CreateDelivery() http.HandlerFunc {
 		payload := schema.CreateDeliveryResponse{}
 		payload.Delivery = schema.ConvertDeliveryToCreateResponse(data.Delivery)
 
-		resp = response.OK(payload)
+		resp = response.Created(payload)
 		rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 	}
 }

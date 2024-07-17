@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS Product (
     active_principle TEXT NOT NULL,
     description TEXT NOT NULL,
     unit_id INT NOT NULL,
-    qty INT NOT NULL,
+    stock INT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     deleted_at TIMESTAMPTZ

@@ -24,7 +24,7 @@ func (r *ProductRepository) ListAll(ctx context.Context, filters dto.Pagination)
 				active_principle,
 				description,
 				unit_id,
-				qty
+				stock
 		FROM product
 		WHERE deleted_at IS NULL
 		ORDER BY %s %s

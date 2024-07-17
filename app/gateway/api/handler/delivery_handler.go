@@ -2,7 +2,9 @@ package handler
 
 import (
 	"encoding/json"
+	"math/rand"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi"
 
@@ -90,7 +92,7 @@ func (h *Handler) CreateDelivery() http.HandlerFunc {
 
 		useCaseInput := usecase.CreateDeliveryInput{}
 		useCaseInput.Delivery.Qty = deliveryBody.Qty
-		useCaseInput.Delivery.Reference = deliveryBody.Reference
+		useCaseInput.Delivery.Reference = strconv.Itoa(rand.Intn(999999) + 100000)
 		useCaseInput.Delivery.MedicineID = deliveryBody.MedicineID
 		useCaseInput.Delivery.UnitID = deliveryBody.UnitID
 		useCaseInput.Delivery.ClientID = deliveryBody.ClientID

@@ -2,7 +2,6 @@ package schema
 
 import (
 	"errors"
-	"strconv"
 	"time"
 
 	"github.com/techhub-jf/farmacia-back/app/domain/dto"
@@ -29,23 +28,13 @@ type CreateDeliveryResponse struct {
 }
 
 type CreateDeliveryRequest struct {
-	Reference  string `json:"reference"`
-	Qty        int32  `json:"qty"`
-	ClientID   int32  `json:"client_id"`
-	MedicineID int32  `json:"medicine_id"`
-	UnitID     int32  `json:"unit_id"`
+	Qty        int32 `json:"qty"`
+	ClientID   int32 `json:"client_id"`
+	MedicineID int32 `json:"medicine_id"`
+	UnitID     int32 `json:"unit_id"`
 }
 
 func ValidateCreateDeliveryRequest(input *CreateDeliveryRequest) error {
-	convertedReference, err := strconv.Atoi(input.Reference)
-	if err != nil {
-		return errors.New("reference must be between 100000 and 999999")
-	}
-
-	if convertedReference < 100000 || convertedReference > 999999 {
-		return errors.New("reference must be between 100000 and 999999")
-	}
-
 	if input.Qty <= 0 {
 		return errors.New("qty must be non-negative")
 	}

@@ -26,6 +26,7 @@ func (r *ProductRepository) ListAll(ctx context.Context, filters dto.Pagination)
 				unit_id,
 				qty
 		FROM product
+		WHERE deleted_at IS NULL
 		ORDER BY %s %s
 		LIMIT $1 OFFSET $2;	
 	`, filters.SortBy, filters.SortType)

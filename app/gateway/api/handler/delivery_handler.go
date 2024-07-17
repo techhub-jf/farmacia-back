@@ -92,7 +92,7 @@ func (h *Handler) CreateDelivery() http.HandlerFunc {
 
 		useCaseInput := usecase.CreateDeliveryInput{}
 		useCaseInput.Delivery.Qty = deliveryBody.Qty
-		useCaseInput.Delivery.Reference = strconv.Itoa(rand.Intn(999999) + 100000)
+		useCaseInput.Delivery.Reference = strconv.Itoa(rand.Intn(schema.MaxReference) + schema.MinReference) //nolint:gosec
 		useCaseInput.Delivery.MedicineID = deliveryBody.MedicineID
 		useCaseInput.Delivery.UnitID = deliveryBody.UnitID
 		useCaseInput.Delivery.ClientID = deliveryBody.ClientID

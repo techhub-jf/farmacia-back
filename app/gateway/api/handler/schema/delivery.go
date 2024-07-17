@@ -34,6 +34,11 @@ type CreateDeliveryRequest struct {
 	UnitID     int32 `json:"unit_id"`
 }
 
+const (
+	MaxReference = 999999
+	MinReference = 100000
+)
+
 func ValidateCreateDeliveryRequest(input *CreateDeliveryRequest) error {
 	if input.Qty <= 0 {
 		return errors.New("qty must be non-negative")

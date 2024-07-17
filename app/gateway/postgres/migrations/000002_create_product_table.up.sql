@@ -1,0 +1,13 @@
+BEGIN;
+CREATE TABLE IF NOT EXISTS Product (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    reference TEXT NOT NULL,
+    active_principle TEXT NOT NULL,
+    description TEXT NOT NULL,
+    unit_id INT NOT NULL,
+    qty INT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ
+);
+COMMIT;

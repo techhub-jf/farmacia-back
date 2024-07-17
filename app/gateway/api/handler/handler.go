@@ -44,5 +44,5 @@ func RegisterPrivateRoutes(
 ) {
 	handler := New(cfg, useCase)
 	handler.ListDeliveriesSetup(router)
-	handler.GetMedicinesSetup(router)
+	handler.ProductsSetup(router)
 }

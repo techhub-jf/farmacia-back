@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -16,23 +17,60 @@ const (
 	ClientPattern = "/client"
 )
 
-func (h *Handler) ClientRoutes(router chi.Router) {
+func (h *Handler) ClientSetup(router chi.Router) {
 	router.Route(ClientPattern, func(r chi.Router) {
-		r.Get("/list", h.ListClients())
-		r.Post("/create", h.CreateClient())
-		r.Put("/update/{id}", h.UpdateClient())
+		r.Get("/", h.ListClients())
+		r.Post("/", h.CreateClient())
+		r.Put("/{id}", h.UpdateClient())
 	})
 }
 
 func (h *Handler) CreateClient() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		println("create client")
+		var clientDTO schema.CreateClientDTO
+
+		var resp *response.Response
+
+		err := json.NewDecoder(r.Body).Decode(&clientDTO)
+		if err != nil {
+			resp = response.BadRequest(err, "Error decoding request body")
+			rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+
+		clientResponse, err := h.useCase.CreateClient(r.Context(), clientDTO)
+		if err != nil {
+			if errors.Is(err, erring.ErrClientAlreadyExists) {
+				resp = response.Conflict(erring.ErrClientAlreadyExists, erring.ErrClientAlreadyExists.Message)
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+			}
+
+			if errors.Is(err, erring.ErrClientCpfInvalid) {
+				resp = response.BadRequest(erring.ErrClientCpfInvalid, erring.ErrClientCpfInvalid.Message)
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+			}
+
+			resp = response.InternalServerError(err)
+			rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+
+		payload := clientResponse
+		resp = response.OK(payload)
+
+		rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 	}
 }
 
 func (h *Handler) UpdateClient() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		println("update client")
+		print("update client")
 	}
 }
 

@@ -83,6 +83,17 @@ func BadRequest(err error, message string) *Response {
 	}
 }
 
+func Conflict(err error, message string) *Response {
+	return &Response{
+		Status: http.StatusConflict,
+		Payload: Error{
+			Status:  http.StatusConflict,
+			Message: message,
+		},
+		InternalErr: err,
+	}
+}
+
 func Unauthorized(message string) *Response {
 	if message == "" {
 		message = "user is not authorized to perform this operation"

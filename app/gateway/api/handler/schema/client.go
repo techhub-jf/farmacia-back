@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type CreateClientRequest struct {
+type CreateClientDTO struct {
 	FullName      string    `json:"full_name"`
 	Birth         time.Time `json:"birth"`
 	Cpf           string    `json:"cpf"`
@@ -14,7 +14,7 @@ type CreateClientRequest struct {
 	Phone         string    `json:"phone"`
 	Cep           string    `json:"cep"`
 	Address       string    `json:"address"`
-	AddressNumber string    `json:"address_number"`
+	AddressNumber int       `json:"address_number"`
 	District      string    `json:"district"`
 	City          string    `json:"city"`
 	State         string    `json:"state"`
@@ -71,4 +71,16 @@ func (cqp *ClientQueryParams) ValidateParameters(page string, sortBy string, sor
 	cqp.SortBy = outputSortBy
 	cqp.SortType = outputSortType
 	cqp.Limit = outputLimit
+}
+
+func (clientDTO *CreateClientDTO) ValidateCpf() error {
+	// TODO: Implement function
+
+	return nil
+}
+
+func (clientDTO *CreateClientDTO) CheckForNilFields() error {
+	// TODO: Implement function
+
+	return nil
 }

@@ -90,7 +90,7 @@ func (h *Handler) ListClients() http.HandlerFunc {
 		var resp *response.Response
 
 		clients, err := h.useCase.GetClients(r.Context(), cqp)
-		if err != nil && errors.Is(err, erring.ErrGettingClientsFromDB) {
+		if err != nil {
 			resp = response.InternalServerError(err)
 			rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 

@@ -53,7 +53,7 @@ func (u UseCase) CreateClient(ctx context.Context, clientDTO schema.CreateClient
 func (u UseCase) GetClients(ctx context.Context, cqp schema.ClientQueryParams) ([]schema.ClientResponse, error) {
 	clients, err := u.ClientsRepository.GetClients(ctx, cqp)
 	if err != nil {
-		return []schema.ClientResponse{}, erring.ErrGettingClientsFromDB
+		return []schema.ClientResponse{}, err
 	}
 
 	clientListOutput := make([]schema.ClientResponse, 0)

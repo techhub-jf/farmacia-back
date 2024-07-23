@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/techhub-jf/farmacia-back/app/domain/dto"
 	"github.com/techhub-jf/farmacia-back/app/domain/entity"
@@ -25,13 +26,17 @@ func (r *ProductRepository) ListAll(ctx context.Context, pagination dto.Paginati
 				unit_id,
 				stock
 		FROM product
-		WHERE deleted_at IS NULL`
+		WHERE deleted_at IS NULL `
 
 	if filterSearch != "" {
-		query += fmt.Sprintf(`WHERE reference LIKE %%'%s'%%
-			OR WHERE description LIKE %%'%s'%%
-			OR WHERE branch LIKE %%'%s'%%
-			`, filterSearch, filterSearch, filterSearch)
+		query += "AND ("
+		if strings.Contains(filterSearch, "#") {
+			query += fmt.Sprintf(`reference ILIKE '%%%s%%' OR `, strings.ReplaceAll(filterSearch, "#", ""))
+		}
+
+		query += fmt.Sprintf(`description ILIKE '%%%s%%'
+			OR branch ILIKE '%%%s%%'
+			) `, filterSearch, filterSearch)
 	}
 
 	query += fmt.Sprintf(`ORDER BY %s %s

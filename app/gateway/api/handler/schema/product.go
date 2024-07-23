@@ -8,9 +8,10 @@ import (
 )
 
 type ListProductsRequest struct {
-	Pagination dto.Pagination
+	Pagination ListProductsRequestPagination
 	Search     string
 }
+type ListProductsRequestPagination = dto.Pagination
 
 var validSortProductFields = map[string]bool{
 	"reference": true,
@@ -18,20 +19,20 @@ var validSortProductFields = map[string]bool{
 	"id":        true,
 }
 
-func ValidateListProductsRequest(input ListProductsRequest) error {
-	if input.Pagination.Page < 1 {
+func ValidateListProductsRequest(input ListProductsRequestPagination) error {
+	if input.Page < 1 {
 		return errors.New("page must be greater than 0")
 	}
 
-	if input.Pagination.ItemsPerPage < 1 || input.Pagination.ItemsPerPage > 100 {
+	if input.ItemsPerPage < 1 || input.ItemsPerPage > 100 {
 		return errors.New("itemsPerPage must be between 1 and 100")
 	}
 
-	if _, found := validSortProductFields[input.Pagination.SortBy]; !found {
+	if _, found := validSortProductFields[input.SortBy]; !found {
 		return errors.New("invalid sortBy param")
 	}
 
-	if input.Pagination.SortType != "ASC" && input.Pagination.SortType != "DESC" {
+	if input.SortType != "ASC" && input.SortType != "DESC" {
 		return errors.New("sortType param must be 'ASC' or 'DESC'")
 	}
 
@@ -59,6 +60,7 @@ func ConvertProductsToListResponse(products []entity.Product) []ListProductsResp
 			Description: product.Description,
 			Branch:      product.Branch,
 			Stock:       product.Stock,
+			UnitID:      product.UnitID,
 		})
 	}
 

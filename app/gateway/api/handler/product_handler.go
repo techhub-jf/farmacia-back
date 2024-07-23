@@ -30,7 +30,7 @@ func (h *Handler) GetProducts() http.HandlerFunc {
 		h.getPaginationParams(queryStrings, &input.Pagination)
 		input.Search = h.readString(queryStrings, "search", "")
 
-		err := input.Pagination.Validate(schema.ValidateListDeliveriesRequest)
+		err := input.Pagination.Validate(schema.ValidateListProductsRequest)
 		if err != nil {
 			resp := response.BadRequest(err, err.Error())
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck

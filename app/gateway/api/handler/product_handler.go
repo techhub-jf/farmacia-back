@@ -26,9 +26,10 @@ func (h *Handler) GetProducts() http.HandlerFunc {
 
 		input := schema.ListProductsRequest{}
 
-		h.getPaginationParams(queryStrings, &input)
+		h.getPaginationParams(queryStrings, &input.Pagination)
+		input.Search = h.readString(queryStrings, "search", "")
 
-		err := input.Validate(schema.ValidateListProductsRequest)
+		err := input.Pagination.Validate(schema.ValidateListDeliveriesRequest)
 		if err != nil {
 			resp := response.BadRequest(err, err.Error())
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
@@ -37,7 +38,8 @@ func (h *Handler) GetProducts() http.HandlerFunc {
 		}
 
 		data, err := h.useCase.GetProducts(req.Context(), usecase.GetProductsInput{
-			Pagination: input,
+			Pagination: input.Pagination,
+			Search:     input.Search,
 		})
 		if err != nil {
 			resp := response.InternalServerError(err)
@@ -47,8 +49,8 @@ func (h *Handler) GetProducts() http.HandlerFunc {
 		}
 
 		metadata := schema.Meta{
-			ItemsPerPage: input.ItemsPerPage,
-			CurrentPage:  input.Page,
+			ItemsPerPage: input.Pagination.ItemsPerPage,
+			CurrentPage:  input.Pagination.Page,
 			TotalItems:   data.TotalProducts,
 		}
 

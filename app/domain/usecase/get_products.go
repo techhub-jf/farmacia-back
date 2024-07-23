@@ -10,6 +10,7 @@ import (
 
 type GetProductsInput struct {
 	Pagination dto.Pagination
+	Search     string
 }
 
 type GetProductsOutput struct {
@@ -18,7 +19,7 @@ type GetProductsOutput struct {
 }
 
 func (u *UseCase) GetProducts(ctx context.Context, input GetProductsInput) (GetProductsOutput, error) {
-	products, totalRecords, err := u.ProductsRepository.ListAll(ctx, input.Pagination)
+	products, totalRecords, err := u.ProductsRepository.ListAll(ctx, input.Pagination, input.Search)
 	if err != nil {
 		return GetProductsOutput{}, fmt.Errorf("error listing products: %w", err)
 	}

@@ -2,7 +2,7 @@ BEGIN;
 CREATE TABLE IF NOT EXISTS Product (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     reference TEXT NOT NULL,
-    active_principle TEXT NOT NULL,
+    branch TEXT NOT NULL,
     description TEXT NOT NULL,
     unit_id INT NOT NULL,
     stock INT NOT NULL,

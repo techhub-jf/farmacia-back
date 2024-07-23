@@ -7,28 +7,31 @@ import (
 	"github.com/techhub-jf/farmacia-back/app/domain/entity"
 )
 
-type ListProductsRequest = dto.Pagination
+type ListProductsRequest struct {
+	Pagination dto.Pagination
+	Search     string
+}
 
-var validSearchProductFields = map[string]bool{
+var validSortProductFields = map[string]bool{
 	"reference": true,
 	"qty":       true,
 	"id":        true,
 }
 
 func ValidateListProductsRequest(input ListProductsRequest) error {
-	if input.Page < 1 {
+	if input.Pagination.Page < 1 {
 		return errors.New("page must be greater than 0")
 	}
 
-	if input.ItemsPerPage < 1 || input.ItemsPerPage > 100 {
+	if input.Pagination.ItemsPerPage < 1 || input.Pagination.ItemsPerPage > 100 {
 		return errors.New("itemsPerPage must be between 1 and 100")
 	}
 
-	if _, found := validSearchProductFields[input.SortBy]; !found {
+	if _, found := validSortProductFields[input.Pagination.SortBy]; !found {
 		return errors.New("invalid sortBy param")
 	}
 
-	if input.SortType != "ASC" && input.SortBy != "DESC" {
+	if input.Pagination.SortType != "ASC" && input.Pagination.SortType != "DESC" {
 		return errors.New("sortType param must be 'ASC' or 'DESC'")
 	}
 
@@ -36,12 +39,12 @@ func ValidateListProductsRequest(input ListProductsRequest) error {
 }
 
 type ListProductsResponse struct {
-	ID              uint   `json:"id"`
-	Reference       string `json:"reference"`
-	Qty             uint   `json:"qty"`
-	Description     string `json:"description"`
-	ActivePrinciple string `json:"active_principle"`
-	UnitID          uint   `json:"unit_id"`
+	ID          uint   `json:"id"`
+	Reference   string `json:"reference"`
+	Stock       uint   `json:"stock"`
+	Description string `json:"description"`
+	Branch      string `json:"branch"`
+	UnitID      uint   `json:"unit_id"`
 }
 
 type ListProductsOutput = PaginatedResponse[ListProductsResponse]
@@ -51,11 +54,11 @@ func ConvertProductsToListResponse(products []entity.Product) []ListProductsResp
 
 	for _, product := range products {
 		parsedProducts = append(parsedProducts, ListProductsResponse{
-			ID:              product.ID,
-			Reference:       product.Reference,
-			Description:     product.Description,
-			ActivePrinciple: product.ActivePrinciple,
-			Qty:             product.Qty,
+			ID:          product.ID,
+			Reference:   product.Reference,
+			Description: product.Description,
+			Branch:      product.Branch,
+			Stock:       product.Stock,
 		})
 	}
 

@@ -6,7 +6,7 @@ import (
 
 type Product struct {
 	ID          uint      `json:"id"`
-	Reference   string    `json:"reference" validate:"nonzero"`
+	Reference   string    `json:"reference"   validate:"nonzero"`
 	Stock       uint      `json:"stock"`
 	Description string    `json:"description"`
 	Branch      string    `json:"branch"`

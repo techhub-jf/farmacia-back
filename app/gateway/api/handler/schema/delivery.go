@@ -34,6 +34,18 @@ type CreateDeliveryRequest struct {
 	UnitID     int32 `json:"unit_id"`
 }
 
+type DeliveryResponse struct {
+	ID        uint      `json:"id"`
+	Reference string    `json:"reference"`
+	Qty       int32     `json:"qty"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type GetDeliveryByReferenceResponse struct {
+	Delivery DeliveryResponse `json:"delivery"`
+}
+
 const (
 	MaxReference = 999999
 	MinReference = 100000
@@ -108,5 +120,15 @@ func ConvertDeliveryToCreateResponse(delivery entity.Delivery) CreatedDeliveryRe
 		ID:        delivery.ID,
 		Reference: delivery.Reference,
 		CreatedAt: delivery.CreatedAt,
+	}
+}
+
+func ConvertDeliveryToGetResponse(delivery entity.Delivery) DeliveryResponse {
+	return DeliveryResponse{
+		ID:        delivery.ID,
+		Reference: delivery.Reference,
+		Qty:       delivery.Qty,
+		CreatedAt: delivery.CreatedAt,
+		UpdatedAt: delivery.UpdatedAt,
 	}
 }

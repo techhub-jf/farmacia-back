@@ -65,3 +65,35 @@ func (r *DeliveriesRepository) ListAll(ctx context.Context, filters dto.Paginati
 
 	return deliveries, totalRecords, nil
 }
+
+func (r *DeliveriesRepository) GetByReference(ctx context.Context, reference string) (entity.Delivery, error) {
+	const (
+		operation = "Repository.DeliveriesRepository.GetByReference"
+	)
+
+	query := `
+		SELECT 
+			id,
+			reference,
+			qty,
+			created_at,
+			updated_at
+		FROM deliveries
+		WHERE reference = $1;
+	`
+
+	var delivery entity.Delivery
+
+	err := r.Client.Pool.QueryRow(ctx, query, reference).Scan(
+		&delivery.ID,
+		&delivery.Reference,
+		&delivery.Qty,
+		&delivery.CreatedAt,
+		&delivery.UpdatedAt,
+	)
+	if err != nil {
+		return entity.Delivery{}, fmt.Errorf("%s: %w", operation, err)
+	}
+
+	return delivery, nil
+}

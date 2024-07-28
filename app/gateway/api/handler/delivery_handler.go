@@ -94,10 +94,31 @@ func (h *Handler) CreateDelivery() http.HandlerFunc {
 
 		useCaseInput := usecase.CreateDeliveryInput{}
 		useCaseInput.Delivery.Qty = deliveryBody.Qty
-		useCaseInput.Delivery.Reference = strconv.Itoa(rand.Intn(schema.MaxReference) + schema.MinReference) //nolint:gosec
 		useCaseInput.Delivery.MedicineID = deliveryBody.MedicineID
 		useCaseInput.Delivery.UnitID = deliveryBody.UnitID
 		useCaseInput.Delivery.ClientID = deliveryBody.ClientID
+
+		reference := strconv.Itoa(rand.Intn(schema.MaxReference) + schema.MinReference) //nolint:gosec
+		_, err = h.useCase.GetDeliveryByReference(req.Context(), usecase.GetDeliveryByReferenceInput{
+			Reference: reference,
+		})
+
+		for err == nil {
+			reference = strconv.Itoa(rand.Intn(schema.MaxReference) + schema.MinReference) //nolint:gosec
+
+			_, err = h.useCase.GetDeliveryByReference(req.Context(), usecase.GetDeliveryByReferenceInput{
+				Reference: reference,
+			})
+		}
+
+		if strings.Contains(err.Error(), "no rows in result set") {
+			useCaseInput.Delivery.Reference = reference
+		} else {
+			resp := response.InternalServerError(err)
+			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
 
 		data, err := h.useCase.CreateDelivery(req.Context(), useCaseInput)
 		if err != nil {
@@ -123,13 +144,13 @@ func (h *Handler) GetDeliveryByReference() http.HandlerFunc {
 			Reference: reference,
 		})
 		if err != nil {
-			print("error", err.Error())
 			if strings.Contains(err.Error(), "no rows in result set") {
 				resp := response.NotFound(err, err.Error())
 				rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 				return
 			}
+
 			resp := response.InternalServerError(err)
 
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck

@@ -105,6 +105,7 @@ func (h *Handler) CreateDelivery() http.HandlerFunc {
 			_, err = h.useCase.GetDeliveryByReference(req.Context(), usecase.GetDeliveryByReferenceInput{
 				Reference: reference,
 			})
+
 			if err != nil {
 				if strings.Contains(err.Error(), "no rows in result set") {
 					useCaseInput.Delivery.Reference = reference

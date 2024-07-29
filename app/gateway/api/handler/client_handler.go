@@ -33,7 +33,7 @@ func (h *Handler) CreateClient() http.HandlerFunc {
 
 		err := json.NewDecoder(r.Body).Decode(&clientDTO)
 		if err != nil {
-			resp = response.BadRequest(err, "Error decoding request body")
+			resp = response.InternalServerError(err)
 			rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 			return

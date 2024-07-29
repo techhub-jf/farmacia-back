@@ -77,7 +77,60 @@ func (h *Handler) CreateClient() http.HandlerFunc {
 
 func (h *Handler) UpdateClient() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		print("update client")
+		var clientDTO schema.ClientDTO
+
+		var resp *response.Response
+
+		id := r.PathValue("id")
+
+		err := json.NewDecoder(r.Body).Decode(&clientDTO)
+		if err != nil {
+			resp = response.InternalServerError(err)
+			rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+
+		clientResponse, err := h.useCase.UpdateClient(r.Context(), clientDTO, id)
+		if err != nil {
+			//TODO: implement error handling
+			switch {
+			case errors.Is(err, erring.ErrResourceNotFound):
+				resp = response.NotFound(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
+			case errors.Is(err, erring.ErrClientEmptyFields):
+				resp = response.BadRequest(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
+			case errors.Is(err, erring.ErrClientCpfInvalid):
+				resp = response.BadRequest(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
+			case errors.Is(err, erring.ErrClientAlreadyExists):
+				resp = response.Conflict(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
+			default:
+				resp = response.InternalServerError(err)
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+			}
+		}
+
+		payload := clientResponse
+		resp = response.OK(payload)
+
+		rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 	}
 }
 

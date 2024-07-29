@@ -98,26 +98,25 @@ func (h *Handler) CreateDelivery() http.HandlerFunc {
 		useCaseInput.Delivery.UnitID = deliveryBody.UnitID
 		useCaseInput.Delivery.ClientID = deliveryBody.ClientID
 
-		reference := strconv.Itoa(rand.Intn(schema.MaxReference) + schema.MinReference) //nolint:gosec
-		_, err = h.useCase.GetDeliveryByReference(req.Context(), usecase.GetDeliveryByReferenceInput{
-			Reference: reference,
-		})
+		var reference string
 
-		for err == nil {
+		for {
 			reference = strconv.Itoa(rand.Intn(schema.MaxReference) + schema.MinReference) //nolint:gosec
-
 			_, err = h.useCase.GetDeliveryByReference(req.Context(), usecase.GetDeliveryByReferenceInput{
 				Reference: reference,
 			})
-		}
+			if err != nil {
+				if strings.Contains(err.Error(), "no rows in result set") {
+					useCaseInput.Delivery.Reference = reference
 
-		if strings.Contains(err.Error(), "no rows in result set") {
-			useCaseInput.Delivery.Reference = reference
-		} else {
-			resp := response.InternalServerError(err)
-			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+					break
+				}
 
-			return
+				resp := response.InternalServerError(err)
+				rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+			}
 		}
 
 		data, err := h.useCase.CreateDelivery(req.Context(), useCaseInput)

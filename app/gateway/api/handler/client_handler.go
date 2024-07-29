@@ -27,7 +27,7 @@ func (h *Handler) ClientSetup(router chi.Router) {
 
 func (h *Handler) CreateClient() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var clientDTO schema.CreateClientDTO
+		var clientDTO schema.ClientDTO
 
 		var resp *response.Response
 

@@ -10,7 +10,7 @@ import (
 	"github.com/techhub-jf/farmacia-back/app/domain/erring"
 )
 
-type CreateClientDTO struct {
+type ClientDTO struct {
 	FullName      string    `json:"full_name"`
 	Birth         time.Time `json:"birth"`
 	Cpf           string    `json:"cpf"`
@@ -77,7 +77,7 @@ func (cqp *ClientQueryParams) ValidateParameters(page string, sortBy string, sor
 	cqp.Limit = outputLimit
 }
 
-func (clientDTO *CreateClientDTO) ValidateCpf() error {
+func (clientDTO *ClientDTO) ValidateCpf() error {
 	const (
 		toBeRemoved  = `[\p{P}\s]`
 		matchPattern = `^[0-9]{11}$`
@@ -141,7 +141,7 @@ func validateDigit(cpf string, digit int) bool {
 	return false
 }
 
-func (clientDTO *CreateClientDTO) CheckForEmptyFields() error {
+func (clientDTO *ClientDTO) CheckForEmptyFields() error {
 	if clientDTO.FullName == "" ||
 		clientDTO.Birth.IsZero() ||
 		clientDTO.Cpf == "" ||

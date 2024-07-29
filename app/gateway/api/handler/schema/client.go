@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/techhub-jf/farmacia-back/app/domain/erring"
 )
 
 type CreateClientDTO struct {
@@ -139,8 +141,21 @@ func validateDigit(cpf string, digit int) bool {
 	return false
 }
 
-func (clientDTO *CreateClientDTO) CheckForNilFields() error {
-	// TODO: Implement function
+func (clientDTO *CreateClientDTO) CheckForEmptyFields() error {
+	if clientDTO.FullName == "" ||
+		clientDTO.Birth.IsZero() ||
+		clientDTO.Cpf == "" ||
+		clientDTO.Rg == "" ||
+		clientDTO.Phone == "" ||
+		clientDTO.Cep == "" ||
+		clientDTO.Address == "" ||
+		clientDTO.AddressNumber <= 0 ||
+		clientDTO.District == "" ||
+		clientDTO.City == "" ||
+		clientDTO.State == "" {
+
+			return erring.ErrClientEmptyFields
+		}
 
 	return nil
 }

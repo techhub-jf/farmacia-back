@@ -11,9 +11,9 @@ import (
 )
 
 func (u UseCase) CreateClient(ctx context.Context, clientDTO schema.CreateClientDTO) (schema.ClientResponse, error) {
-	err := clientDTO.CheckForNilFields()
+	err := clientDTO.CheckForEmptyFields()
 	if err != nil {
-		return schema.ClientResponse{}, erring.ErrClientNullFields
+		return schema.ClientResponse{}, erring.ErrClientEmptyFields
 	}
 
 	err = clientDTO.ValidateCpf()

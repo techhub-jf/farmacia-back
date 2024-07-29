@@ -55,6 +55,13 @@ func (h *Handler) CreateClient() http.HandlerFunc {
 				return
 			}
 
+			if errors.Is(err, erring.ErrClientEmptyFields) {
+				resp = response.BadRequest(erring.ErrClientEmptyFields, erring.ErrClientEmptyFields.Message)
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+			}
+
 			resp = response.InternalServerError(err)
 			rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 

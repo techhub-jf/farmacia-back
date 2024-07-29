@@ -16,6 +16,7 @@ require (
 
 require (
 	github.com/cockroachdb/apd v1.1.0 // indirect
+	github.com/dev-gst/cpfvalidator v0.0.0-20240729051530-b02bd6247159
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect

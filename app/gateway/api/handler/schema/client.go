@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/dev-gst/cpfvalidator"
 )
 
 type CreateClientDTO struct {
@@ -75,6 +77,14 @@ func (cqp *ClientQueryParams) ValidateParameters(page string, sortBy string, sor
 
 func (clientDTO *CreateClientDTO) ValidateCpf() error {
 	// TODO: Implement function
+	cpf := cpfvalidator.CPF{
+		Value: clientDTO.Cpf,
+	}
+
+	err := cpf.ValidateCPF()
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

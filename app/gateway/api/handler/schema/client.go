@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -74,9 +76,67 @@ func (cqp *ClientQueryParams) ValidateParameters(page string, sortBy string, sor
 }
 
 func (clientDTO *CreateClientDTO) ValidateCpf() error {
-	// TODO: Implement function
+	const (
+		toBeRemoved  = `[\p{P}\s]`
+		matchPattern = `^[0-9]{11}$`
+	)
 
-	return nil
+	reg, err := regexp.Compile(toBeRemoved)
+	if err != nil {
+		return err
+	}
+
+	clientDTO.Cpf = reg.ReplaceAllString(clientDTO.Cpf, "")
+
+	reg, err = regexp.Compile(matchPattern)
+	if err != nil {
+		return err
+	}
+
+	if !reg.MatchString(clientDTO.Cpf) {
+		return fmt.Errorf("CPF must have 11 digits")
+	}
+
+	const (
+		firstDigitCalcNumber  = 9
+		secondDigitCalcNumber = 10
+	)
+
+	if validateDigit(clientDTO.Cpf, firstDigitCalcNumber) &&
+		validateDigit(clientDTO.Cpf, secondDigitCalcNumber) {
+
+		return nil
+	}
+
+	return fmt.Errorf("CPF is inválid")
+}
+
+func validateDigit(cpf string, digit int) bool {
+	var total int
+	for i := range digit {
+		multiplier := (digit + 1 - i)
+
+		number, err := strconv.Atoi(string(cpf[i]))
+		if err != nil {
+			return false
+		}
+
+		total += number * multiplier
+	}
+
+	r := total % 11
+
+	result := 11 - r
+	if result >= 10 {
+		result = 0
+	}
+
+	originalDigit, err := strconv.Atoi(string(cpf[digit]))
+	if err == nil && result == originalDigit {
+		return true
+	}
+
+	return false
 }
 
 func (clientDTO *CreateClientDTO) CheckForNilFields() error {

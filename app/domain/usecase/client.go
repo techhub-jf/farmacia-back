@@ -10,7 +10,7 @@ import (
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 )
 
-func (u UseCase) CreateClient(ctx context.Context, clientDTO schema.CreateClientDTO) (schema.ClientResponse, error) {
+func (u *UseCase) CreateClient(ctx context.Context, clientDTO schema.ClientDTO) (schema.ClientResponse, error) {
 	err := clientDTO.CheckForEmptyFields()
 	if err != nil {
 		return schema.ClientResponse{}, erring.ErrClientEmptyFields
@@ -50,7 +50,7 @@ func (u UseCase) CreateClient(ctx context.Context, clientDTO schema.CreateClient
 	}, nil
 }
 
-func (u UseCase) GetClients(ctx context.Context, cqp schema.ClientQueryParams) ([]schema.ClientResponse, error) {
+func (u *UseCase) GetClients(ctx context.Context, cqp schema.ClientQueryParams) ([]schema.ClientResponse, error) {
 	clients, err := u.ClientsRepository.GetClients(ctx, cqp)
 	if err != nil {
 		return []schema.ClientResponse{}, err

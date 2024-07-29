@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	clientExistsClause = `
+	clientCPFExistsClause = `
 	SELECT EXISTS (SELECT 1 FROM client WHERE cpf = $1 AND deleted_at IS NULL)
 	`
 
@@ -27,7 +27,7 @@ func (r *ClientsRepository) CreateClient(ctx context.Context, client entity.Clie
 
 	err := r.Pool.QueryRow(
 		ctx,
-		clientExistsClause,
+		clientCPFExistsClause,
 		client.Cpf,
 	).Scan(
 		&clientAlreadyExists,

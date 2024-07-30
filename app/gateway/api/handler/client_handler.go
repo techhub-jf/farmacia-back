@@ -81,8 +81,6 @@ func (h *Handler) UpdateClient() http.HandlerFunc {
 
 		var resp *response.Response
 
-		id := r.PathValue("id")
-
 		err := json.NewDecoder(r.Body).Decode(&clientDTO)
 		if err != nil {
 			resp = response.InternalServerError(err)
@@ -91,10 +89,17 @@ func (h *Handler) UpdateClient() http.HandlerFunc {
 			return
 		}
 
+		id := r.PathValue("id")
+
 		clientResponse, err := h.useCase.UpdateClient(r.Context(), clientDTO, id)
 		if err != nil {
-			//TODO: implement error handling
 			switch {
+			case errors.Is(err, erring.ErrInvalidId):
+				resp = response.BadRequest(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
 			case errors.Is(err, erring.ErrResourceNotFound):
 				resp = response.NotFound(err, err.Error())
 				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck

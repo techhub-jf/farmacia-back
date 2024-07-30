@@ -54,7 +54,7 @@ func (u *UseCase) CreateClient(ctx context.Context, clientDTO schema.ClientDTO) 
 func (u *UseCase) UpdateClient(ctx context.Context, clientDTO schema.ClientDTO, id string) (schema.ClientResponse, error) {
 	clientID, err := strconv.ParseUint(id, 10, 0)
 	if err != nil {
-		return schema.ClientResponse{}, err
+		return schema.ClientResponse{}, erring.ErrInvalidId
 	}
 
 	err = clientDTO.CheckForEmptyFields()

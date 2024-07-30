@@ -89,7 +89,7 @@ func (h *Handler) UpdateClient() http.HandlerFunc {
 			return
 		}
 
-		id := r.PathValue("id")
+		id := chi.URLParam(r, "id")
 
 		clientResponse, err := h.useCase.UpdateClient(r.Context(), clientDTO, id)
 		if err != nil {

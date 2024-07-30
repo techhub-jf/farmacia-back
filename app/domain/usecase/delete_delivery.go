@@ -2,13 +2,14 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/techhub-jf/farmacia-back/app/domain/entity"
 )
 
 type DeleteDeliveryInput struct {
-	Id int32
+	ID int32
 }
 
 type DeleteDeliveryOutput struct {
@@ -16,16 +17,16 @@ type DeleteDeliveryOutput struct {
 }
 
 func (u *UseCase) DeleteDelivery(ctx context.Context, input DeleteDeliveryInput) error {
-	delivery, err := u.DeliveriesRepository.GetByID(ctx, input.Id)
+	delivery, err := u.DeliveriesRepository.GetByID(ctx, input.ID)
 	if err != nil {
 		return fmt.Errorf("error getting delivery: %w", err)
 	}
 
 	if delivery.DeletedAt != nil {
-		return fmt.Errorf("delivery already deleted")
+		return errors.New("delivery already deleted")
 	}
 
-	err = u.DeliveriesRepository.Delete(ctx, input.Id)
+	err = u.DeliveriesRepository.Delete(ctx, input.ID)
 	if err != nil {
 		return fmt.Errorf("error deleting delivery: %w", err)
 	}

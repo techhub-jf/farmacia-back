@@ -17,7 +17,6 @@ func (r *DeliveriesRepository) Delete(ctx context.Context, id int32) error {
 	`
 
 	_, err := r.Client.Pool.Exec(ctx, query, id)
-
 	if err != nil {
 		return fmt.Errorf("%s: %w", operation, err)
 	}

@@ -171,7 +171,8 @@ func (h *Handler) GetDeliveryByReference() http.HandlerFunc {
 func (h *Handler) DeleteDelivery() http.HandlerFunc {
 	return func(rw http.ResponseWriter, req *http.Request) {
 		id := chi.URLParam(req, "id")
-		idInt, err := strconv.Atoi(id)
+
+		idInt, err := strconv.ParseInt(id, 10, 32)
 		if err != nil {
 			resp := response.BadRequest(err, "Invalid ID")
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
@@ -180,7 +181,7 @@ func (h *Handler) DeleteDelivery() http.HandlerFunc {
 		}
 
 		err = h.useCase.DeleteDelivery(req.Context(), usecase.DeleteDeliveryInput{
-			Id: int32(idInt),
+			ID: int32(idInt),
 		})
 		if err != nil {
 			if notFound := strings.Contains(err.Error(), "no rows in result set") || strings.Contains(err.Error(), "delivery already deleted"); notFound {

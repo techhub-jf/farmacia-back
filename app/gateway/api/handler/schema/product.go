@@ -44,8 +44,8 @@ type ListProductsResponse struct {
 	Reference   string `json:"reference"`
 	Stock       uint   `json:"stock"`
 	Description string `json:"description"`
-	Branch      string `json:"branch"`
-	UnitID      uint   `json:"unit_id"`
+	Brand       string `json:"brand"`
+	TypeID      uint   `json:"type_id"`
 }
 
 type ListProductsOutput = PaginatedResponse[ListProductsResponse]
@@ -58,9 +58,9 @@ func ConvertProductsToListResponse(products []entity.Product) []ListProductsResp
 			ID:          product.ID,
 			Reference:   product.Reference,
 			Description: product.Description,
-			Branch:      product.Branch,
+			Brand:       product.Brand,
 			Stock:       product.Stock,
-			UnitID:      product.UnitID,
+			TypeID:      product.TypeID,
 		})
 	}
 

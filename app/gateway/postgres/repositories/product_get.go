@@ -21,9 +21,9 @@ func (r *ProductRepository) ListAll(ctx context.Context, pagination dto.Paginati
 				count(*) OVER() AS total_count,
 				id,
 				reference,
-				branch,
+				brand,
 				description,
-				unit_id,
+				type_id,
 				stock
 		FROM product
 		WHERE deleted_at IS NULL `
@@ -35,7 +35,7 @@ func (r *ProductRepository) ListAll(ctx context.Context, pagination dto.Paginati
 		}
 
 		query += fmt.Sprintf(`description ILIKE '%%%s%%'
-			OR branch ILIKE '%%%s%%'
+			OR brand ILIKE '%%%s%%'
 			) `, filterSearch, filterSearch)
 	}
 
@@ -64,8 +64,8 @@ func (r *ProductRepository) ListAll(ctx context.Context, pagination dto.Paginati
 			&product.ID,
 			&product.Reference,
 			&product.Description,
-			&product.Branch,
-			&product.UnitID,
+			&product.Brand,
+			&product.TypeID,
 			&product.Stock,
 		)
 		if err != nil {

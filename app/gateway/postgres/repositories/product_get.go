@@ -63,8 +63,8 @@ func (r *ProductRepository) ListAll(ctx context.Context, pagination dto.Paginati
 			&totalRecords,
 			&product.ID,
 			&product.Reference,
-			&product.Description,
 			&product.Brand,
+			&product.Description,
 			&product.TypeID,
 			&product.Stock,
 		)

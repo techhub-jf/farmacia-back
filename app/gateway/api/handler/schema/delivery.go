@@ -17,6 +17,60 @@ var validSearchFields = map[string]bool{
 	"created_at": true,
 }
 
+type CreatedDeliveryResponse struct {
+	ID        uint      `json:"id"`
+	Reference string    `json:"reference"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type CreateDeliveryResponse struct {
+	Delivery CreatedDeliveryResponse `json:"delivery"`
+}
+
+type CreateDeliveryRequest struct {
+	Qty        int32 `json:"qty"`
+	ClientID   int32 `json:"client_id"`
+	MedicineID int32 `json:"medicine_id"`
+	UnitID     int32 `json:"unit_id"`
+}
+
+type DeliveryResponse struct {
+	ID        uint      `json:"id"`
+	Reference string    `json:"reference"`
+	Qty       int32     `json:"qty"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type GetDeliveryByReferenceResponse struct {
+	Delivery DeliveryResponse `json:"delivery"`
+}
+
+const (
+	MaxReference = 999999
+	MinReference = 100000
+)
+
+func ValidateCreateDeliveryRequest(input *CreateDeliveryRequest) error {
+	if input.Qty <= 0 {
+		return errors.New("qty must be non-negative")
+	}
+
+	if input.ClientID == 0 {
+		return errors.New("client_id must be provided")
+	}
+
+	if input.MedicineID == 0 {
+		return errors.New("medicine_id must be provided")
+	}
+
+	if input.UnitID == 0 {
+		return errors.New("unit_id must be provided")
+	}
+
+	return nil
+}
+
 func ValidateListDeliveriesRequest(input ListDeliveriesRequest) error {
 	if input.Page < 1 {
 		return errors.New("page must be greater than 0")
@@ -59,4 +113,22 @@ func ConvertDeliveriesToListResponse(deliveries []entity.Delivery) []ListDeliver
 	}
 
 	return parsedDeliveries
+}
+
+func ConvertDeliveryToCreateResponse(delivery entity.Delivery) CreatedDeliveryResponse {
+	return CreatedDeliveryResponse{
+		ID:        delivery.ID,
+		Reference: delivery.Reference,
+		CreatedAt: delivery.CreatedAt,
+	}
+}
+
+func ConvertDeliveryToGetResponse(delivery entity.Delivery) DeliveryResponse {
+	return DeliveryResponse{
+		ID:        delivery.ID,
+		Reference: delivery.Reference,
+		Qty:       delivery.Qty,
+		CreatedAt: delivery.CreatedAt,
+		UpdatedAt: delivery.UpdatedAt,
+	}
 }

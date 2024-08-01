@@ -43,6 +43,6 @@ func RegisterPrivateRoutes(
 	useCase *usecase.UseCase,
 ) {
 	handler := New(cfg, useCase)
-	handler.ListDeliveriesSetup(router)
+	handler.DeliveriesSetup(router)
 	handler.ProductsSetup(router)
 }

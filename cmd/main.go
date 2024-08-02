@@ -19,10 +19,10 @@ import (
 	"github.com/techhub-jf/farmacia-back/app/config"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api"
 	"github.com/techhub-jf/farmacia-back/app/gateway/postgres"
-	_ "github.com/techhub-jf/farmacia-back/docs"
 	"golang.org/x/sync/errgroup"
 )
 
+//go:embed docs/swagger.json
 var swaggerJSON embed.FS
 
 func main() {
@@ -54,7 +54,20 @@ func main() {
 	api := api.New(cfg, appl.UseCase)
 	r.Mount("/", api.Handler)
 
-	r.Get("/swagger/*", httpSwagger.WrapHandler)
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8000/swagger/swagger.json"), // The URL to your Swagger JSON
+	))
+
+	// Serve embedded Swagger JSON file
+	r.Get("/swagger/swagger.json", func(w http.ResponseWriter, r *http.Request) {
+		file, err := swaggerJSON.ReadFile("docs/swagger.json")
+		if err != nil {
+			http.Error(w, "Failed to read Swagger JSON", http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(file)
+	})
 	// Server
 	server := &http.Server{
 		Addr:         cfg.Server.Address,

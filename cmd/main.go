@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"embed"
+
 	"errors"
 	"fmt"
 	"log"
@@ -11,13 +13,17 @@ import (
 	"os/signal"
 	"syscall"
 
-	"golang.org/x/sync/errgroup"
-
+	"github.com/go-chi/chi"
+	"github.com/swaggo/http-swagger" // Import the http-swagger middleware
 	"github.com/techhub-jf/farmacia-back/app"
 	"github.com/techhub-jf/farmacia-back/app/config"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api"
 	"github.com/techhub-jf/farmacia-back/app/gateway/postgres"
+	_ "github.com/techhub-jf/farmacia-back/docs"
+	"golang.org/x/sync/errgroup"
 )
+
+var swaggerJSON embed.FS
 
 func main() {
 	ctx := context.Background()
@@ -39,11 +45,21 @@ func main() {
 		log.Fatalf("failed to start application: %v", err)
 	}
 
+	// Create a chi router
+	r := chi.NewRouter()
+
+	// Set up API routes
+
+	// Mount your API handler onto the router
+	api := api.New(cfg, appl.UseCase)
+	r.Mount("/", api.Handler)
+
+	r.Get("/swagger/*", httpSwagger.WrapHandler)
 	// Server
 	server := &http.Server{
 		Addr:         cfg.Server.Address,
 		BaseContext:  func(_ net.Listener) context.Context { return ctx },
-		Handler:      api.New(cfg, appl.UseCase).Handler,
+		Handler:      r,
 		ReadTimeout:  cfg.Server.ReadTimeout,
 		WriteTimeout: cfg.Server.WriteTimeout,
 	}

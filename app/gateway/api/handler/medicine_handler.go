@@ -12,6 +12,15 @@ const (
 	medicinePattern = "/medicine"
 )
 
+// GetMedicines retrieves a list of medicines
+// @Summary Retrieve Medicines
+// @Description Get a list of all medicines available
+// @Tags medicines
+// @Accept  json
+// @Produce json
+// @Success 200 {array} Medicine
+// @Failure 500 {object} ErrorResponse
+// @Router /api/v1/farmacia-tech/medicines [get]
 func (h *Handler) GetMedicinesSetup(router chi.Router) {
 	router.Route(medicinePattern, func(r chi.Router) {
 		r.Get("/", h.GetMedicines())

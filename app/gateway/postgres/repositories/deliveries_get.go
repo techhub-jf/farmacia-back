@@ -97,3 +97,37 @@ func (r *DeliveriesRepository) GetByReference(ctx context.Context, reference str
 
 	return delivery, nil
 }
+
+func (r *DeliveriesRepository) GetByID(ctx context.Context, id int32) (entity.Delivery, error) {
+	const (
+		operation = "Repository.DeliveriesRepository.GetByID"
+	)
+
+	query := `
+		SELECT
+			id,
+			reference,
+			qty,
+			created_at,
+			updated_at,
+			deleted_at
+		FROM deliveries
+		WHERE id = $1;
+	`
+
+	var delivery entity.Delivery
+
+	err := r.Client.Pool.QueryRow(ctx, query, id).Scan(
+		&delivery.ID,
+		&delivery.Reference,
+		&delivery.Qty,
+		&delivery.CreatedAt,
+		&delivery.UpdatedAt,
+		&delivery.DeletedAt,
+	)
+	if err != nil {
+		return entity.Delivery{}, fmt.Errorf("%s: %w", operation, err)
+	}
+
+	return delivery, nil
+}

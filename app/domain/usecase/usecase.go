@@ -14,6 +14,7 @@ type UseCase struct {
 	AccountsRepository   accountsRepository
 	ClientsRepository    clientsRepository
 	DeliveriesRepository deliveriesRepository
+	ProductsRepository   productsRepository
 }
 
 type accountsRepository interface {
@@ -28,4 +29,7 @@ type deliveriesRepository interface {
 
 type clientsRepository interface {
 	GetClients(ctx context.Context, cqp schema.ClientQueryParams) ([]*entity.Client, error)
+}
+type productsRepository interface {
+	ListAll(ctx context.Context, pagination dto.Pagination, filter string) ([]entity.Product, int, error)
 }

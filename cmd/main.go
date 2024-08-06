@@ -4,6 +4,8 @@ import (
 	"context"
 	"embed"
 
+	"github.com/techhub-jf/farmacia-back/app/gateway/postgres"
+
 	"errors"
 	"fmt"
 	"log"
@@ -14,20 +16,28 @@ import (
 	"syscall"
 
 	"github.com/go-chi/chi"
-	"github.com/swaggo/http-swagger" // Import the http-swagger middleware
+	"github.com/joho/godotenv"
+	_ "github.com/swaggo/http-swagger/example/go-chi/docs"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 	"github.com/techhub-jf/farmacia-back/app"
 	"github.com/techhub-jf/farmacia-back/app/config"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api"
-	"github.com/techhub-jf/farmacia-back/app/gateway/postgres"
 	"golang.org/x/sync/errgroup"
 )
 
 //go:embed docs/swagger.json
 var swaggerJSON embed.FS
 
-func main() {
-	ctx := context.Background()
+// @title Farmacia-back API
+// @version 1.0
 
+// @host localhost:8000
+func main() {
+	errCfg := godotenv.Load()
+	if errCfg != nil {
+		log.Fatal("Error loading .env file")
+	}
+	ctx := context.Background()
 	cfg, err := config.New()
 	if err != nil {
 		log.Fatalf("failed to load configurations: %v", err)
@@ -55,11 +65,11 @@ func main() {
 	r.Mount("/", api.Handler)
 
 	r.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:8000/swagger/swagger.json"), // The URL to your Swagger JSON
+		httpSwagger.URL("http://localhost:8000/swagger/doc.json"), // URL to your Swagger JSON
 	))
 
 	// Serve embedded Swagger JSON file
-	r.Get("/swagger/swagger.json", func(w http.ResponseWriter, r *http.Request) {
+	r.Get("/swagger/doc.json", func(w http.ResponseWriter, r *http.Request) {
 		file, err := swaggerJSON.ReadFile("docs/swagger.json")
 		if err != nil {
 			http.Error(w, "Failed to read Swagger JSON", http.StatusInternalServerError)

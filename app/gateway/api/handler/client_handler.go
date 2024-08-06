@@ -22,6 +22,18 @@ func (h *Handler) ListClients(router chi.Router) {
 	})
 }
 
+// GetClients
+// @Summary Get Clients
+// @Description Returns Clients
+// @Tags Client
+// @Produce json
+// @Param page query uint64 false "Page number" example(1)
+// @Param sort_by query string false "Sort by field" example("name")
+// @Param sort_type query string false "Sort type (asc/desc)" example("asc")
+// @Param limit query uint64 false "Limit of records per page" example(10)
+// @Success 200 {object} []schema.ClientResponse "List of clients"
+// @Failure 500 "Internal Server Error"
+// @Router /api/v1/farmacia-tech/clients [get]
 func (h *Handler) GetClients() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		values := r.URL.Query()

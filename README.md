@@ -12,3 +12,7 @@ Para iniciar a API em seu local, use o comando `make start`.
 Se estiver usando VS Code, já está disponível um arquivo `.launch.json` que possui as configurações para depurar o projeto.
 
 Para padronizar o projeto rode o comando `make lint`.
+
+
+## Criar documentação Swagger
+swag init --dir .\,..\app\gateway\api,..\app\domain\entity

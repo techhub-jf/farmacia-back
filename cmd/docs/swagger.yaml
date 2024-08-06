@@ -1,4 +1,299 @@
+definitions:
+  entity.Medicine:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      email:
+        type: integer
+      id:
+        type: integer
+      medicine_id:
+        type: integer
+      name:
+        type: string
+      qty:
+        type: integer
+      unit_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  schema.ClientResponse:
+    properties:
+      cpf:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+      phone:
+        type: string
+      reference:
+        type: string
+      rg:
+        type: string
+    type: object
+  schema.CreateDeliveryRequest:
+    properties:
+      client_id:
+        type: integer
+      medicine_id:
+        type: integer
+      qty:
+        type: integer
+      unit_id:
+        type: integer
+    type: object
+  schema.CreateDeliveryResponse:
+    properties:
+      delivery:
+        $ref: '#/definitions/schema.CreatedDeliveryResponse'
+    type: object
+  schema.CreatedDeliveryResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      reference:
+        type: string
+    type: object
+  schema.DeliveryResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      qty:
+        type: integer
+      reference:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  schema.GetDeliveryByReferenceResponse:
+    properties:
+      delivery:
+        $ref: '#/definitions/schema.DeliveryResponse'
+    type: object
+  schema.ListDeliveriesOutput:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/schema.ListDeliveriesResponse'
+        type: array
+      metadata:
+        $ref: '#/definitions/schema.Meta'
+    type: object
+  schema.ListDeliveriesResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      qty:
+        type: integer
+      reference:
+        type: string
+    type: object
+  schema.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  schema.LoginResponse:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      token:
+        type: string
+    type: object
+  schema.Meta:
+    properties:
+      current_page:
+        type: integer
+      items_per_page:
+        type: integer
+      total_items:
+        type: integer
+    type: object
+host: localhost:8000
 info:
   contact: {}
-paths: {}
+  title: Farmacia-back API
+  version: "1.0"
+paths:
+  /api/v1/farmacia-tech/auth:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user and returns a JWT token
+      parameters:
+      - description: Login Credentials
+        in: body
+        name: loginRequest
+        required: true
+        schema:
+          $ref: '#/definitions/schema.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            $ref: '#/definitions/schema.LoginResponse'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: User Login
+      tags:
+      - Authentication
+  /api/v1/farmacia-tech/clients:
+    get:
+      description: Returns Clients
+      parameters:
+      - description: Page number
+        example: 1
+        in: query
+        name: page
+        type: integer
+      - description: Sort by field
+        example: '"name"'
+        in: query
+        name: sort_by
+        type: string
+      - description: Sort type (asc/desc)
+        example: '"asc"'
+        in: query
+        name: sort_type
+        type: string
+      - description: Limit of records per page
+        example: 10
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of clients
+          schema:
+            items:
+              $ref: '#/definitions/schema.ClientResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+      summary: Get Clients
+      tags:
+      - Client
+  /api/v1/farmacia-tech/deliveries:
+    get:
+      description: Returns deliveries
+      parameters:
+      - description: Page number
+        example: 1
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        example: 10
+        in: query
+        name: items_per_page
+        type: integer
+      - description: Field to sort by
+        example: '"name"'
+        in: query
+        name: sort_by
+        type: string
+      - description: Type of sorting (asc/desc)
+        example: '"asc"'
+        in: query
+        name: sort_type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of deliveries"s
+          schema:
+            $ref: '#/definitions/schema.ListDeliveriesOutput'
+        "500":
+          description: Internal Server Error
+      summary: Get Deliveries
+      tags:
+      - Delivery
+    post:
+      consumes:
+      - application/json
+      description: Create a new delivery record
+      parameters:
+      - description: Delivery data
+        in: body
+        name: delivery
+        required: true
+        schema:
+          $ref: '#/definitions/schema.CreateDeliveryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created delivery
+          schema:
+            $ref: '#/definitions/schema.CreateDeliveryResponse'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Create Delivery
+      tags:
+      - Delivery
+  /api/v1/farmacia-tech/deliveries/reference/{reference}:
+    get:
+      description: Get details of a specific delivery using its reference
+      parameters:
+      - description: Delivery Reference
+        in: path
+        name: reference
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Delivery details
+          schema:
+            $ref: '#/definitions/schema.GetDeliveryByReferenceResponse'
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Get Delivery by Reference
+      tags:
+      - Delivery
+  /api/v1/farmacia-tech/medicine:
+    get:
+      description: Returns medicines
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of medicines
+          schema:
+            items:
+              $ref: '#/definitions/entity.Medicine'
+            type: array
+        "500":
+          description: Internal Server Error
+      summary: Get Medicines
+      tags:
+      - Medicine
 swagger: "2.0"

@@ -15,3 +15,7 @@ type Medicine struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 	DeletedAt   time.Time `json:"deleted_at"`
 }
+
+// type GetMedicinesOutput struct {
+// 	Medicines []Medicine `json:"medicines"`
+// }

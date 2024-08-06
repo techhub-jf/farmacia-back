@@ -27,6 +27,7 @@ func RegisterHealthCheckRoute(router chi.Router) {
 	})
 }
 
+// Registered as public to test swagger
 func RegisterPublicRoutes(
 	router chi.Router,
 	cfg config.Config,
@@ -35,6 +36,8 @@ func RegisterPublicRoutes(
 	handler := New(cfg, useCase)
 	handler.LoginSetup(router)
 	handler.ListClients(router)
+	handler.GetMedicinesSetup(router)
+	handler.DeliveriesSetup(router)
 }
 
 func RegisterPrivateRoutes(
@@ -42,7 +45,6 @@ func RegisterPrivateRoutes(
 	cfg config.Config,
 	useCase *usecase.UseCase,
 ) {
-	handler := New(cfg, useCase)
-	handler.DeliveriesSetup(router)
-	handler.GetMedicinesSetup(router)
+	// handler := New(cfg, useCase)
+
 }

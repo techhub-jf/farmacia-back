@@ -184,7 +184,7 @@ func (h *Handler) DeleteDelivery() http.HandlerFunc {
 			ID: int32(idInt),
 		})
 		if err != nil {
-			if notFound := strings.Contains(err.Error(), "no rows in result set") || strings.Contains(err.Error(), "delivery already deleted"); notFound {
+			if strings.Contains(err.Error(), "no rows in result set") {
 				resp := response.NotFound(err, "Delivery not found")
 				rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 

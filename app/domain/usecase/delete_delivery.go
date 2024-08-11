@@ -20,5 +20,6 @@ func (u *UseCase) DeleteDelivery(ctx context.Context, input DeleteDeliveryInput)
 	if err != nil {
 		return fmt.Errorf("error deleting delivery: %w", err)
 	}
+
 	return nil
 }

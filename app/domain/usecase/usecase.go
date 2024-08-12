@@ -23,8 +23,10 @@ type accountsRepository interface {
 
 type deliveriesRepository interface {
 	ListAll(ctx context.Context, filters dto.Pagination) ([]entity.Delivery, int, error)
+	GetByID(ctx context.Context, id int32) (entity.Delivery, error)
 	GetByReference(ctx context.Context, reference string) (entity.Delivery, error)
 	Create(ctx context.Context, delivery CreateDeliveryInput) (entity.Delivery, error)
+	Delete(ctx context.Context, id int32) error
 }
 
 type clientsRepository interface {

@@ -13,5 +13,5 @@ type Delivery struct {
 	TypeID     uint
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	DeletedAt  time.Time
+	DeletedAt  *time.Time
 }

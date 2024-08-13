@@ -20,7 +20,7 @@ func (u *UseCase) CreateClient(ctx context.Context, clientDTO schema.ClientDTO) 
 
 	err = clientDTO.ValidateCpf()
 	if err != nil {
-		return schema.ClientResponse{}, erring.ErrClientCpfInvalid
+		return schema.ClientResponse{}, err
 	}
 
 	client := entity.Client{
@@ -66,7 +66,7 @@ func (u *UseCase) UpdateClient(ctx context.Context, clientDTO schema.ClientDTO, 
 
 	err = clientDTO.ValidateCpf()
 	if err != nil {
-		return schema.ClientResponse{}, erring.ErrClientCpfInvalid
+		return schema.ClientResponse{}, err
 	}
 
 	client := entity.Client{

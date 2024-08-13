@@ -55,6 +55,13 @@ func (h *Handler) CreateClient() http.HandlerFunc {
 				return
 			}
 
+			if errors.Is(err, erring.ErrClientCpfElevenDigits) {
+				resp = response.BadRequest(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+			}
+
 			if errors.Is(err, erring.ErrClientEmptyFields) {
 				resp = response.BadRequest(err, err.Error())
 				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
@@ -113,6 +120,12 @@ func (h *Handler) UpdateClient() http.HandlerFunc {
 				return
 
 			case errors.Is(err, erring.ErrClientCpfInvalid):
+				resp = response.BadRequest(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
+			case errors.Is(err, erring.ErrClientCpfElevenDigits):
 				resp = response.BadRequest(err, err.Error())
 				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 

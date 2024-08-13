@@ -1,7 +1,6 @@
 package schema
 
 import (
-	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -90,7 +89,7 @@ func (clientDTO *ClientDTO) ValidateCpf() error {
 	reg = regexp.MustCompile(matchPattern)
 
 	if !reg.MatchString(clientDTO.Cpf) {
-		return fmt.Errorf("CPF must have 11 digits")
+		return erring.ErrClientCpfElevenDigits
 	}
 
 	const (
@@ -103,7 +102,7 @@ func (clientDTO *ClientDTO) ValidateCpf() error {
 		return nil
 	}
 
-	return fmt.Errorf("CPF is inválid")
+	return erring.ErrClientCpfInvalid
 }
 
 func validateDigit(cpf string, digit int) bool {

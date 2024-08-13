@@ -94,7 +94,7 @@ func (h *Handler) UpdateClient() http.HandlerFunc {
 		clientResponse, err := h.useCase.UpdateClient(r.Context(), clientDTO, id)
 		if err != nil {
 			switch {
-			case errors.Is(err, erring.ErrInvalidId):
+			case errors.Is(err, erring.ErrInvalidID):
 				resp = response.BadRequest(err, err.Error())
 				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 

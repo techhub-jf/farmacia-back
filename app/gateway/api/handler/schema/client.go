@@ -83,17 +83,11 @@ func (clientDTO *ClientDTO) ValidateCpf() error {
 		matchPattern = `^[0-9]{11}$`
 	)
 
-	reg, err := regexp.Compile(toBeRemoved)
-	if err != nil {
-		return err
-	}
+	reg := regexp.MustCompile(toBeRemoved)
 
 	clientDTO.Cpf = reg.ReplaceAllString(clientDTO.Cpf, "")
 
-	reg, err = regexp.Compile(matchPattern)
-	if err != nil {
-		return err
-	}
+	reg = regexp.MustCompile(matchPattern)
 
 	if !reg.MatchString(clientDTO.Cpf) {
 		return fmt.Errorf("CPF must have 11 digits")
@@ -106,7 +100,6 @@ func (clientDTO *ClientDTO) ValidateCpf() error {
 
 	if validateDigit(clientDTO.Cpf, firstDigitCalcNumber) &&
 		validateDigit(clientDTO.Cpf, secondDigitCalcNumber) {
-
 		return nil
 	}
 
@@ -126,10 +119,12 @@ func validateDigit(cpf string, digit int) bool {
 		total += number * multiplier
 	}
 
-	r := total % 11
+	const cpfDigitNumber = 11
 
-	result := 11 - r
-	if result >= 10 {
+	r := total % cpfDigitNumber
+
+	result := cpfDigitNumber - r
+	if result >= cpfDigitNumber-1 {
 		result = 0
 	}
 
@@ -153,9 +148,8 @@ func (clientDTO *ClientDTO) CheckForEmptyFields() error {
 		clientDTO.District == "" ||
 		clientDTO.City == "" ||
 		clientDTO.State == "" {
-
-			return erring.ErrClientEmptyFields
-		}
+		return erring.ErrClientEmptyFields
+	}
 
 	return nil
 }

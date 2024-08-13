@@ -13,7 +13,7 @@ const (
 	SELECT EXISTS (SELECT 1 FROM client WHERE cpf = $1 AND id <> $2 AND deleted_at IS NULL)
 	`
 
-	clientIdExistsClause = `
+	clientIDExistsClause = `
 	SELECT EXISTS (SELECT 1 FROM client WHERE id = $1 AND deleted_at IS NULL)
 	`
 
@@ -32,7 +32,7 @@ func (r *ClientsRepository) UpdateClient(ctx context.Context, client entity.Clie
 
 	err := r.Pool.QueryRow(
 		ctx,
-		clientIdExistsClause,
+		clientIDExistsClause,
 		client.ID,
 	).Scan(
 		&clientExists,

@@ -42,21 +42,21 @@ func (h *Handler) CreateClient() http.HandlerFunc {
 		clientResponse, err := h.useCase.CreateClient(r.Context(), clientDTO)
 		if err != nil {
 			if errors.Is(err, erring.ErrClientAlreadyExists) {
-				resp = response.Conflict(erring.ErrClientAlreadyExists, erring.ErrClientAlreadyExists.Message)
+				resp = response.Conflict(err, err.Error())
 				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 				return
 			}
 
 			if errors.Is(err, erring.ErrClientCpfInvalid) {
-				resp = response.BadRequest(erring.ErrClientCpfInvalid, erring.ErrClientCpfInvalid.Message)
+				resp = response.BadRequest(err, err.Error())
 				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 				return
 			}
 
 			if errors.Is(err, erring.ErrClientEmptyFields) {
-				resp = response.BadRequest(erring.ErrClientEmptyFields, erring.ErrClientEmptyFields.Message)
+				resp = response.BadRequest(err, err.Error())
 				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 				return

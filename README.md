@@ -14,5 +14,6 @@ Se estiver usando VS Code, já está disponível um arquivo `.launch.json` que p
 Para padronizar o projeto rode o comando `make lint`.
 
 
+## Lembre de colocar as rotas do swagger como public para testar
 ## Criar documentação Swagger
 swag init --dir .\,..\app\gateway\api,..\app\domain\entity

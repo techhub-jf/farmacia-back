@@ -265,6 +265,29 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/farmacia-tech/products": {
+            "get": {
+                "description": "Returns products",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get Products",
+                "responses": {
+                    "200": {
+                        "description": "List of products",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ListProductsOutput"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -418,6 +441,43 @@ const docTemplate = `{
                 },
                 "reference": {
                     "type": "string"
+                }
+            }
+        },
+        "schema.ListProductsOutput": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.ListProductsResponse"
+                    }
+                },
+                "metadata": {
+                    "$ref": "#/definitions/schema.Meta"
+                }
+            }
+        },
+        "schema.ListProductsResponse": {
+            "type": "object",
+            "properties": {
+                "brand": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "reference": {
+                    "type": "string"
+                },
+                "stock": {
+                    "type": "integer"
+                },
+                "type_id": {
+                    "type": "integer"
                 }
             }
         },

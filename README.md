@@ -15,5 +15,5 @@ Para padronizar o projeto rode o comando `make lint`.
 
 
 ## Lembre de colocar as rotas do swagger como public para testar
-## Criar documentação Swagger
-swag init --dir .\,..\app\gateway\api,..\app\domain\entity
+## Criar documentação Swagger, se for uma pasta nova precisa incluir ela nesse script
+swag init --dir .\,..\app\gateway\api,..\app\domain\entity, ..\app\domain\usecase

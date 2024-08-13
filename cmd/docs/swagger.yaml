@@ -98,6 +98,30 @@ definitions:
       reference:
         type: string
     type: object
+  schema.ListProductsOutput:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/schema.ListProductsResponse'
+        type: array
+      metadata:
+        $ref: '#/definitions/schema.Meta'
+    type: object
+  schema.ListProductsResponse:
+    properties:
+      brand:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      reference:
+        type: string
+      stock:
+        type: integer
+      type_id:
+        type: integer
+    type: object
   schema.LoginRequest:
     properties:
       email:
@@ -296,4 +320,19 @@ paths:
       summary: Get Medicines
       tags:
       - Medicine
+  /api/v1/farmacia-tech/products:
+    get:
+      description: Returns products
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of products
+          schema:
+            $ref: '#/definitions/schema.ListProductsOutput'
+        "500":
+          description: Internal Server Error
+      summary: Get Products
+      tags:
+      - Product
 swagger: "2.0"

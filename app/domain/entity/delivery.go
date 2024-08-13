@@ -10,8 +10,8 @@ type Delivery struct {
 	ClientID   uint
 	MedicineID uint
 	Qty        int32
-	UnitID     uint
+	TypeID     uint
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	DeletedAt  time.Time
+	DeletedAt  *time.Time
 }

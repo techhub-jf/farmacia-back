@@ -1,6 +1,6 @@
 package dto
 
-type ValidationFunc func(p Pagination) error
+type ValidationPaginationFunc func(p Pagination) error
 
 type Pagination struct {
 	Page         int
@@ -9,6 +9,6 @@ type Pagination struct {
 	SortType     string
 }
 
-func (p Pagination) Validate(validateFunc ValidationFunc) error {
+func (p Pagination) Validate(validateFunc ValidationPaginationFunc) error {
 	return validateFunc(p)
 }

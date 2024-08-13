@@ -2,8 +2,10 @@ package usecase
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
-	"math/rand/v2"
+	"math/big"
+	"strconv"
 	"time"
 
 	"github.com/techhub-jf/farmacia-back/app/domain/entity"
@@ -21,8 +23,13 @@ func (u *UseCase) CreateClient(ctx context.Context, clientDTO schema.ClientDTO) 
 		return schema.ClientResponse{}, fmt.Errorf("error creating client: %w", err)
 	}
 
+	reference, err := generateReferenceNumber()
+	if err != nil {
+		return schema.ClientResponse{}, fmt.Errorf("error creating client: %w", err)
+	}
+
 	client := entity.Client{
-		Reference:     fmt.Sprint(rand.Int32N(900000) + 100000),
+		Reference:     reference,
 		FullName:      clientDTO.FullName,
 		Birth:         clientDTO.Birth,
 		Cpf:           clientDTO.Cpf,
@@ -49,6 +56,22 @@ func (u *UseCase) CreateClient(ctx context.Context, clientDTO schema.ClientDTO) 
 		Rg:        outputClient.Rg,
 		Phone:     outputClient.Phone,
 	}, nil
+}
+
+func generateReferenceNumber() (string, error) {
+	const (
+		minReferenceSize = 100_000
+		maxReferenceSize = 900_000
+	)
+
+	newBigInt := big.NewInt(maxReferenceSize)
+
+	randomNumber, err := rand.Int(rand.Reader, newBigInt)
+	if err != nil {
+		return "", fmt.Errorf("failed to generate reference number: %w", err)
+	}
+
+	return strconv.FormatUint(randomNumber.Uint64()+minReferenceSize, 10), nil
 }
 
 func (u *UseCase) UpdateClient(ctx context.Context, clientDTO schema.ClientDTO, id string) (schema.ClientResponse, error) {

@@ -60,10 +60,10 @@ func (cqp *ClientQueryParams) ValidateParameters(page string, sortBy string, sor
 	sortType = strings.ToUpper(sortType)
 
 	var outputSortType string
-	if sortType == "DESC" {
+	if sortType == "DESC" { //nolint:goconst
 		outputSortType = sortType
 	} else {
-		outputSortType = "ASC"
+		outputSortType = "ASC" //nolint:goconst
 	}
 
 	outputLimit, err := strconv.ParseUint(limit, 10, 32)

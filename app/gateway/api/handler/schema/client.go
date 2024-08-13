@@ -153,3 +153,12 @@ func (clientDTO *ClientDTO) CheckForEmptyFields() error {
 
 	return nil
 }
+
+func (clientDTO *ClientDTO) ValidateID(id string) (uint, error) {
+	clientID, err := strconv.ParseUint(id, 10, 0)
+	if err != nil {
+		return 0, erring.ErrInvalidID
+	}
+
+	return uint(clientID), nil
+}

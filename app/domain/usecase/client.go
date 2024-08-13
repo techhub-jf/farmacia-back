@@ -4,11 +4,9 @@ import (
 	"context"
 	"fmt"
 	"math/rand/v2"
-	"strconv"
 	"time"
 
 	"github.com/techhub-jf/farmacia-back/app/domain/entity"
-	"github.com/techhub-jf/farmacia-back/app/domain/erring"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 )
 
@@ -54,9 +52,9 @@ func (u *UseCase) CreateClient(ctx context.Context, clientDTO schema.ClientDTO) 
 }
 
 func (u *UseCase) UpdateClient(ctx context.Context, clientDTO schema.ClientDTO, id string) (schema.ClientResponse, error) {
-	clientID, err := strconv.ParseUint(id, 10, 0)
+	clientID, err := clientDTO.ValidateID(id)
 	if err != nil {
-		return schema.ClientResponse{}, fmt.Errorf("error updating client: %w", erring.ErrInvalidID)
+		return schema.ClientResponse{}, fmt.Errorf("error updating client: %w", err)
 	}
 
 	err = clientDTO.CheckForEmptyFields()
@@ -70,7 +68,7 @@ func (u *UseCase) UpdateClient(ctx context.Context, clientDTO schema.ClientDTO, 
 	}
 
 	client := entity.Client{
-		ID:            uint(clientID),
+		ID:            clientID,
 		FullName:      clientDTO.FullName,
 		Birth:         clientDTO.Birth,
 		Cpf:           clientDTO.Cpf,

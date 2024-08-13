@@ -28,6 +28,18 @@ func (h *Handler) DeliveriesSetup(router chi.Router) {
 	})
 }
 
+// GetDeliveries
+// @Summary Get Deliveries
+// @Description Returns deliveries
+// @Tags Delivery
+// @Produce json
+// @Param page query int false "Page number" example(1)
+// @Param items_per_page query int false "Number of items per page" example(10)
+// @Param sort_by query string false "Field to sort by" example("name")
+// @Param sort_type query string false "Type of sorting (asc/desc)" example("asc")
+// @Success 200 {object} schema.ListDeliveriesOutput "List of deliveries"s
+// @Failure 500 "Internal Server Error"
+// @Router /api/v1/farmacia-tech/deliveries [get]
 func (h *Handler) ListDeliveries() http.HandlerFunc {
 	return func(rw http.ResponseWriter, req *http.Request) {
 		queryStrings := req.URL.Query()
@@ -71,6 +83,17 @@ func (h *Handler) ListDeliveries() http.HandlerFunc {
 	}
 }
 
+// CreateDelivery creates a new delivery
+// @Summary Create Delivery
+// @Description Create a new delivery record
+// @Tags Delivery
+// @Accept json
+// @Produce json
+// @Param delivery body schema.CreateDeliveryRequest true "Delivery data"
+// @Success 201 {object} schema.CreateDeliveryResponse "Created delivery"
+// @Failure 400 "Bad Request"
+// @Failure 500 "Internal Server Error"
+// @Router /api/v1/farmacia-tech/deliveries [post]
 func (h *Handler) CreateDelivery() http.HandlerFunc {
 	return func(rw http.ResponseWriter, req *http.Request) {
 		deliveryBody := &schema.CreateDeliveryRequest{}
@@ -137,6 +160,16 @@ func (h *Handler) CreateDelivery() http.HandlerFunc {
 	}
 }
 
+// GetDeliveryByReference retrieves a delivery by its reference
+// @Summary Get Delivery by Reference
+// @Description Get details of a specific delivery using its reference
+// @Tags Delivery
+// @Produce json
+// @Param reference path string true "Delivery Reference"
+// @Success 200 {object} schema.GetDeliveryByReferenceResponse "Delivery details"
+// @Failure 404 "Not Found"
+// @Failure 500 "Internal Server Error"
+// @Router /api/v1/farmacia-tech/deliveries/reference/{reference} [get]
 func (h *Handler) GetDeliveryByReference() http.HandlerFunc {
 	return func(rw http.ResponseWriter, req *http.Request) {
 		reference := chi.URLParam(req, "reference")

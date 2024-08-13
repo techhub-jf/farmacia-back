@@ -21,6 +21,14 @@ func (h *Handler) ProductsSetup(router chi.Router) {
 	})
 }
 
+// GetProducts
+// @Summary Get Products
+// @Description Returns products
+// @Tags Product
+// @Produce json
+// @Success 200 {object} schema.ListProductsOutput "List of products"
+// @Failure 500 "Internal Server Error"
+// @Router /api/v1/farmacia-tech/products [get]
 func (h *Handler) GetProducts() http.HandlerFunc {
 	return func(rw http.ResponseWriter, req *http.Request) {
 		queryStrings := req.URL.Query()

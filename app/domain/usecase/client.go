@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand/v2"
 	"strconv"
+	"time"
 
 	"github.com/techhub-jf/farmacia-back/app/domain/entity"
 	"github.com/techhub-jf/farmacia-back/app/domain/erring"
@@ -25,6 +26,7 @@ func (u *UseCase) CreateClient(ctx context.Context, clientDTO schema.ClientDTO) 
 	client := entity.Client{
 		Reference:     fmt.Sprint(rand.Int32N(900000) + 100000),
 		FullName:      clientDTO.FullName,
+		Birth:         clientDTO.Birth,
 		Cpf:           clientDTO.Cpf,
 		Rg:            clientDTO.Rg,
 		Phone:         clientDTO.Phone,
@@ -70,6 +72,7 @@ func (u *UseCase) UpdateClient(ctx context.Context, clientDTO schema.ClientDTO, 
 	client := entity.Client{
 		ID:            uint(clientID),
 		FullName:      clientDTO.FullName,
+		Birth:         clientDTO.Birth,
 		Cpf:           clientDTO.Cpf,
 		Rg:            clientDTO.Rg,
 		Phone:         clientDTO.Phone,
@@ -79,6 +82,7 @@ func (u *UseCase) UpdateClient(ctx context.Context, clientDTO schema.ClientDTO, 
 		District:      clientDTO.District,
 		City:          clientDTO.City,
 		State:         clientDTO.State,
+		UpdatedAt:     time.Now(),
 	}
 
 	outputClient, err := u.ClientsRepository.UpdateClient(ctx, client)

@@ -19,8 +19,8 @@ const (
 
 	updateClientClause = `
 	UPDATE client
-	SET full_name = $1, birth = $2, cpf = $3, rg = $4, phone = $5, cep = $6, address = $7, address_number = $8, district = $9, city = $10, state = $11
-	WHERE id = $12 AND deleted_at IS NULL
+	SET full_name = $1, birth = $2, cpf = $3, rg = $4, phone = $5, cep = $6, address = $7, address_number = $8, district = $9, city = $10, state = $11, updated_at = $12
+	WHERE id = $13 AND deleted_at IS NULL
 	RETURNING id, reference, full_name, cpf, rg, phone
 `
 )
@@ -74,6 +74,7 @@ func (r *ClientsRepository) UpdateClient(ctx context.Context, client entity.Clie
 		client.District,
 		client.City,
 		client.State,
+		client.UpdatedAt,
 		client.ID,
 	}
 

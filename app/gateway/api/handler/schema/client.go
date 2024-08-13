@@ -107,6 +107,7 @@ func (clientDTO *ClientDTO) ValidateCpf() error {
 
 func validateDigit(cpf string, digit int) bool {
 	var total int
+
 	for i := range digit {
 		multiplier := (digit + 1 - i)
 

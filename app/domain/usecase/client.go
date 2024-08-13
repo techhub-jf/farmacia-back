@@ -15,12 +15,12 @@ import (
 func (u *UseCase) CreateClient(ctx context.Context, clientDTO schema.ClientDTO) (schema.ClientResponse, error) {
 	err := clientDTO.CheckForEmptyFields()
 	if err != nil {
-		return schema.ClientResponse{}, erring.ErrClientEmptyFields
+		return schema.ClientResponse{}, fmt.Errorf("error creating client: %w", err)
 	}
 
 	err = clientDTO.ValidateCpf()
 	if err != nil {
-		return schema.ClientResponse{}, err
+		return schema.ClientResponse{}, fmt.Errorf("error creating client: %w", err)
 	}
 
 	client := entity.Client{
@@ -40,7 +40,7 @@ func (u *UseCase) CreateClient(ctx context.Context, clientDTO schema.ClientDTO) 
 
 	outputClient, err := u.ClientsRepository.CreateClient(ctx, client)
 	if err != nil {
-		return schema.ClientResponse{}, err
+		return schema.ClientResponse{}, fmt.Errorf("error creating client: %w", err)
 	}
 
 	return schema.ClientResponse{
@@ -56,17 +56,17 @@ func (u *UseCase) CreateClient(ctx context.Context, clientDTO schema.ClientDTO) 
 func (u *UseCase) UpdateClient(ctx context.Context, clientDTO schema.ClientDTO, id string) (schema.ClientResponse, error) {
 	clientID, err := strconv.ParseUint(id, 10, 0)
 	if err != nil {
-		return schema.ClientResponse{}, erring.ErrInvalidID
+		return schema.ClientResponse{}, fmt.Errorf("error updating client: %w", erring.ErrInvalidID)
 	}
 
 	err = clientDTO.CheckForEmptyFields()
 	if err != nil {
-		return schema.ClientResponse{}, erring.ErrClientEmptyFields
+		return schema.ClientResponse{}, fmt.Errorf("error updating client: %w", err)
 	}
 
 	err = clientDTO.ValidateCpf()
 	if err != nil {
-		return schema.ClientResponse{}, err
+		return schema.ClientResponse{}, fmt.Errorf("error updating client: %w", err)
 	}
 
 	client := entity.Client{
@@ -87,7 +87,7 @@ func (u *UseCase) UpdateClient(ctx context.Context, clientDTO schema.ClientDTO, 
 
 	outputClient, err := u.ClientsRepository.UpdateClient(ctx, client)
 	if err != nil {
-		return schema.ClientResponse{}, err
+		return schema.ClientResponse{}, fmt.Errorf("error updating client: %w", err)
 	}
 
 	return schema.ClientResponse{
@@ -103,7 +103,7 @@ func (u *UseCase) UpdateClient(ctx context.Context, clientDTO schema.ClientDTO, 
 func (u *UseCase) GetClients(ctx context.Context, cqp schema.ClientQueryParams) ([]schema.ClientResponse, error) {
 	clients, err := u.ClientsRepository.GetClients(ctx, cqp)
 	if err != nil {
-		return []schema.ClientResponse{}, err
+		return []schema.ClientResponse{}, fmt.Errorf("error getting clients: %w", err)
 	}
 
 	clientListOutput := make([]schema.ClientResponse, 0)

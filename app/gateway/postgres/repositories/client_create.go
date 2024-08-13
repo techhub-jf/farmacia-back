@@ -70,7 +70,7 @@ func (r *ClientsRepository) CreateClient(ctx context.Context, client entity.Clie
 		&clientResponse.Phone,
 	)
 	if err != nil {
-		return entity.Client{}, err
+		return entity.Client{}, fmt.Errorf("%s -> %w", operation, err)
 	}
 
 	return clientResponse, nil

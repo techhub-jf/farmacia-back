@@ -31,6 +31,8 @@ type deliveriesRepository interface {
 
 type clientsRepository interface {
 	GetClients(ctx context.Context, cqp schema.ClientQueryParams) ([]*entity.Client, error)
+	CreateClient(ctx context.Context, client entity.Client) (entity.Client, error)
+	UpdateClient(ctx context.Context, client entity.Client) (entity.Client, error)
 }
 type productsRepository interface {
 	ListAll(ctx context.Context, pagination dto.Pagination, filter string) ([]entity.Product, int, error)

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -13,16 +14,144 @@ import (
 )
 
 const (
-	clientPattern = "/clients"
+	ClientPattern = "/client"
 )
 
-func (h *Handler) ListClients(router chi.Router) {
-	router.Route(clientPattern, func(r chi.Router) {
-		r.Get("/", h.GetClients())
+func (h *Handler) ClientSetup(router chi.Router) {
+	router.Route(ClientPattern, func(r chi.Router) {
+		r.Get("/", h.ListClients())
+		r.Post("/", h.CreateClient())
+		r.Put("/{id}", h.UpdateClient())
 	})
 }
 
-func (h *Handler) GetClients() http.HandlerFunc {
+func (h *Handler) CreateClient() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var clientDTO schema.ClientDTO
+
+		var resp *response.Response
+
+		err := json.NewDecoder(r.Body).Decode(&clientDTO)
+		if err != nil {
+			resp = response.InternalServerError(err)
+			rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+
+		clientResponse, err := h.useCase.CreateClient(r.Context(), clientDTO)
+		if err != nil {
+			switch {
+			case errors.Is(err, erring.ErrClientAlreadyExists):
+				resp = response.Conflict(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
+			case errors.Is(err, erring.ErrClientCpfInvalid):
+				resp = response.BadRequest(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
+			case errors.Is(err, erring.ErrClientCpfElevenDigits):
+				resp = response.BadRequest(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
+			case errors.Is(err, erring.ErrClientEmptyFields):
+				resp = response.BadRequest(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
+			default:
+				resp = response.InternalServerError(err)
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+			}
+		}
+
+		payload := clientResponse
+		resp = response.OK(payload)
+
+		rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+	}
+}
+
+func (h *Handler) UpdateClient() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var clientDTO schema.ClientDTO
+
+		var resp *response.Response
+
+		err := json.NewDecoder(r.Body).Decode(&clientDTO)
+		if err != nil {
+			resp = response.InternalServerError(err)
+			rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+
+		id := chi.URLParam(r, "id")
+
+		clientResponse, err := h.useCase.UpdateClient(r.Context(), clientDTO, id)
+		if err != nil {
+			switch {
+			case errors.Is(err, erring.ErrInvalidID):
+				resp = response.BadRequest(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
+			case errors.Is(err, erring.ErrResourceNotFound):
+				resp = response.NotFound(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
+			case errors.Is(err, erring.ErrClientEmptyFields):
+				resp = response.BadRequest(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
+			case errors.Is(err, erring.ErrClientCpfInvalid):
+				resp = response.BadRequest(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
+			case errors.Is(err, erring.ErrClientCpfElevenDigits):
+				resp = response.BadRequest(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
+			case errors.Is(err, erring.ErrClientAlreadyExists):
+				resp = response.Conflict(err, err.Error())
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+
+			default:
+				resp = response.InternalServerError(err)
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+			}
+		}
+
+		payload := clientResponse
+		resp = response.OK(payload)
+
+		rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+	}
+}
+
+func (h *Handler) ListClients() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		values := r.URL.Query()
 
@@ -38,7 +167,7 @@ func (h *Handler) GetClients() http.HandlerFunc {
 		var resp *response.Response
 
 		clients, err := h.useCase.GetClients(r.Context(), cqp)
-		if err != nil && errors.Is(err, erring.ErrGettingClientsFromDB) {
+		if err != nil {
 			resp = response.InternalServerError(err)
 			rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 

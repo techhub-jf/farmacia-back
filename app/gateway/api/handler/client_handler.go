@@ -41,38 +41,37 @@ func (h *Handler) CreateClient() http.HandlerFunc {
 
 		clientResponse, err := h.useCase.CreateClient(r.Context(), clientDTO)
 		if err != nil {
-			if errors.Is(err, erring.ErrClientAlreadyExists) {
+			switch {
+			case errors.Is(err, erring.ErrClientAlreadyExists):
 				resp = response.Conflict(err, err.Error())
 				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 				return
-			}
 
-			if errors.Is(err, erring.ErrClientCpfInvalid) {
+			case errors.Is(err, erring.ErrClientCpfInvalid):
 				resp = response.BadRequest(err, err.Error())
 				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 				return
-			}
 
-			if errors.Is(err, erring.ErrClientCpfElevenDigits) {
+			case errors.Is(err, erring.ErrClientCpfElevenDigits):
 				resp = response.BadRequest(err, err.Error())
 				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 				return
-			}
 
-			if errors.Is(err, erring.ErrClientEmptyFields) {
+			case errors.Is(err, erring.ErrClientEmptyFields):
 				resp = response.BadRequest(err, err.Error())
 				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 				return
+
+			default:
+				resp = response.InternalServerError(err)
+				rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
 			}
-
-			resp = response.InternalServerError(err)
-			rest.SendJSON(w, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
-
-			return
 		}
 
 		payload := clientResponse

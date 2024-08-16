@@ -17,12 +17,12 @@ type UpdateTypeOutput struct {
 }
 
 func (u *UseCase) UpdateType(ctx context.Context, input UpdateTypeInput) (UpdateTypeOutput, error) {
-	t, err := u.TypeRepository.Update(ctx, input)
+	output, err := u.TypeRepository.Update(ctx, input)
 	if err != nil {
 		return UpdateTypeOutput{}, fmt.Errorf("error getting type: %w", err)
 	}
 
 	return UpdateTypeOutput{
-		Type: t,
+		Type: output,
 	}, nil
 }

@@ -53,20 +53,20 @@ func (r *TypeRepository) ListAll(ctx context.Context, pagination dto.Pagination,
 	types := []entity.Type{}
 
 	for rows.Next() {
-		var t entity.Type
+		var typeStruct entity.Type
 
 		err := rows.Scan(
 			&totalRecords,
-			&t.ID,
-			&t.Reference,
-			&t.Label,
-			&t.CreatedAt,
+			&typeStruct.ID,
+			&typeStruct.Reference,
+			&typeStruct.Label,
+			&typeStruct.CreatedAt,
 		)
 		if err != nil {
 			return nil, 0, fmt.Errorf("%s: %w", operation, err)
 		}
 
-		types = append(types, t)
+		types = append(types, typeStruct)
 	}
 
 	if err = rows.Err(); err != nil {
@@ -92,20 +92,20 @@ func (r *TypeRepository) GetByLabel(ctx context.Context, label string) (entity.T
 		WHERE label = $1;
 	`
 
-	var t entity.Type
+	var typeStruct entity.Type
 
 	err := r.Client.Pool.QueryRow(ctx, query, label).Scan(
-		&t.ID,
-		&t.Reference,
-		&t.Label,
-		&t.CreatedAt,
-		&t.UpdatedAt,
+		&typeStruct.ID,
+		&typeStruct.Reference,
+		&typeStruct.Label,
+		&typeStruct.CreatedAt,
+		&typeStruct.UpdatedAt,
 	)
 	if err != nil {
 		return entity.Type{}, fmt.Errorf("%s: %w", operation, err)
 	}
 
-	return t, nil
+	return typeStruct, nil
 }
 
 func (r *TypeRepository) GetByReference(ctx context.Context, reference string) (entity.Type, error) {
@@ -124,18 +124,18 @@ func (r *TypeRepository) GetByReference(ctx context.Context, reference string) (
 		WHERE reference = $1;
 	`
 
-	var t entity.Type
+	var typeStruct entity.Type
 
 	err := r.Client.Pool.QueryRow(ctx, query, reference).Scan(
-		&t.ID,
-		&t.Reference,
-		&t.Label,
-		&t.CreatedAt,
-		&t.UpdatedAt,
+		&typeStruct.ID,
+		&typeStruct.Reference,
+		&typeStruct.Label,
+		&typeStruct.CreatedAt,
+		&typeStruct.UpdatedAt,
 	)
 	if err != nil {
 		return entity.Type{}, fmt.Errorf("%s: %w", operation, err)
 	}
 
-	return t, nil
+	return typeStruct, nil
 }

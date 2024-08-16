@@ -17,12 +17,12 @@ type CreateTypeOutput struct {
 }
 
 func (u *UseCase) CreateType(ctx context.Context, input CreateTypeInput) (CreateTypeOutput, error) {
-	t, err := u.TypeRepository.Create(ctx, input)
+	output, err := u.TypeRepository.Create(ctx, input)
 	if err != nil {
 		return CreateTypeOutput{}, fmt.Errorf("error creating delivery: %w", err)
 	}
 
 	return CreateTypeOutput{
-		Type: t,
+		Type: output,
 	}, nil
 }

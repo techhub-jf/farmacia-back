@@ -43,7 +43,7 @@ func ValidateListTypesRequest(input ListTypesRequestPagination) error {
 		return errors.New("itemsPerPage must be between 1 and 100")
 	}
 
-	if _, found := validSortProductFields[input.SortBy]; !found {
+	if _, found := validSortTypesFields[input.SortBy]; !found {
 		return errors.New("invalid sortBy param")
 	}
 
@@ -73,7 +73,6 @@ func ConvertTypesToListResponse(types []entity.Type) []ListTypesResponse {
 			Label:     t.Label,
 			CreatedAt: t.CreatedAt,
 		})
-
 	}
 
 	return parsedTypes

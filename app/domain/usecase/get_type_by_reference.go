@@ -16,12 +16,12 @@ type GetTypeByReferenceOutput struct {
 }
 
 func (u *UseCase) GetTypeByReference(ctx context.Context, input GetTypeByReferenceInput) (GetTypeByReferenceOutput, error) {
-	t, err := u.TypeRepository.GetByReference(ctx, input.Reference)
+	output, err := u.TypeRepository.GetByReference(ctx, input.Reference)
 	if err != nil {
 		return GetTypeByReferenceOutput{}, fmt.Errorf("error getting type: %w", err)
 	}
 
 	return GetTypeByReferenceOutput{
-		Type: t,
+		Type: output,
 	}, nil
 }

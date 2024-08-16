@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -53,7 +52,6 @@ func (h *Handler) GetTypes() http.HandlerFunc {
 		})
 		if err != nil {
 			resp := response.InternalServerError(err)
-			fmt.Println(err)
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 			return
@@ -102,7 +100,6 @@ func (h *Handler) CreateType() http.HandlerFunc {
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 			return
-
 		}
 
 		var reference string
@@ -166,6 +163,7 @@ func (h *Handler) UpdateType() http.HandlerFunc {
 
 			return
 		}
+
 		useCaseInput.Type.ID = idInt
 		useCaseInput.Type.Label = typeBody.Label
 
@@ -178,7 +176,6 @@ func (h *Handler) UpdateType() http.HandlerFunc {
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 			return
-
 		}
 
 		data, err := h.useCase.UpdateType(req.Context(), useCaseInput)

@@ -30,13 +30,16 @@ func (r *TypeRepository) Update(ctx context.Context, input usecase.UpdateTypeInp
 		query,
 		args...)
 
-	t := entity.Type{}
+	typeStruct := entity.Type{}
 
-	err := row.Scan(&t.ID,
-		&t.Reference, &t.CreatedAt)
+	err := row.Scan(
+		&typeStruct.ID,
+		&typeStruct.Reference,
+		&typeStruct.CreatedAt,
+	)
 	if err != nil {
 		return entity.Type{}, fmt.Errorf("%s: %w", operation, err)
 	}
 
-	return t, nil
+	return typeStruct, nil
 }

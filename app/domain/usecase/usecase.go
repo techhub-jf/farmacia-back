@@ -38,4 +38,6 @@ type productsRepository interface {
 }
 type typeRepository interface {
 	ListAll(ctx context.Context, pagination dto.Pagination, filter string) ([]entity.Type, int, error)
+	GetByReference(ctx context.Context, reference string) (entity.Type, error)
+	Create(ctx context.Context, t CreateTypeInput) (entity.Type, error)
 }

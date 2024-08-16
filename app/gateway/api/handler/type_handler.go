@@ -1,7 +1,11 @@
 package handler
 
 import (
+	"encoding/json"
+	"math/rand"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/go-chi/chi"
 
@@ -62,6 +66,61 @@ func (h *Handler) GetTypes() http.HandlerFunc {
 			Metadata: metadata,
 		}
 		resp := response.OK(payload)
+		rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+	}
+}
+
+func (h *Handler) CreateType() http.HandlerFunc {
+	return func(rw http.ResponseWriter, req *http.Request) {
+		typeBody := &schema.CreateTypeRequest{}
+		err := json.NewDecoder(req.Body).Decode(typeBody)
+
+		var resp *response.Response
+
+		if err != nil {
+			resp = response.InternalServerError(err)
+			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+
+		useCaseInput := usecase.CreateTypeInput{}
+		useCaseInput.Type.Label = typeBody.Label
+
+		var reference string
+
+		for {
+			reference = strconv.Itoa(rand.Intn(schema.MaxReference) + schema.MinReference) //nolint:gosec
+
+			_, err = h.useCase.GetTypeByReference(req.Context(), usecase.GetTypeByReferenceInput{
+				Reference: reference,
+			})
+			if err != nil {
+				if strings.Contains(err.Error(), "no rows in result set") {
+					useCaseInput.Type.Reference = reference
+
+					break
+				}
+
+				resp := response.InternalServerError(err)
+				rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+			}
+		}
+
+		data, err := h.useCase.CreateType(req.Context(), useCaseInput)
+		if err != nil {
+			resp := response.InternalServerError(err)
+			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+
+		payload := schema.CreateTypeResponse{}
+		payload.Delivery = schema.ConvertTypeToCreateResponse(data.Type)
+
+		resp = response.Created(payload)
 		rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 	}
 }

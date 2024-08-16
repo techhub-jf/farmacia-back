@@ -2,6 +2,7 @@ package schema
 
 import (
 	"errors"
+	"time"
 
 	"github.com/techhub-jf/farmacia-back/app/domain/dto"
 	"github.com/techhub-jf/farmacia-back/app/domain/entity"
@@ -16,6 +17,20 @@ type ListTypesRequestPagination = dto.Pagination
 var validSortTypesFields = map[string]bool{
 	"reference": true,
 	"label":     true,
+}
+
+type CreateTypeRequest struct {
+	Label string `json:"label"`
+}
+
+type CreatedTypeResponse struct {
+	ID        uint      `json:"id"`
+	Reference string    `json:"reference"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type CreateTypeResponse struct {
+	Delivery CreatedTypeResponse `json:"type"`
 }
 
 func ValidateListTypesRequest(input ListTypesRequestPagination) error {
@@ -41,7 +56,7 @@ func ValidateListTypesRequest(input ListTypesRequestPagination) error {
 type ListTypesResponse struct {
 	ID        uint   `json:"id"`
 	Reference string `json:"reference"`
-	Label     uint   `json:"label"`
+	Label     string `json:"label"`
 }
 
 type ListTypesOutput = PaginatedResponse[ListTypesResponse]
@@ -59,4 +74,12 @@ func ConvertTypesToListResponse(types []entity.Type) []ListTypesResponse {
 	}
 
 	return parsedTypes
+}
+
+func ConvertTypeToCreateResponse(t entity.Type) CreatedTypeResponse {
+	return CreatedTypeResponse{
+		ID:        t.ID,
+		Reference: t.Reference,
+		CreatedAt: t.CreatedAt,
+	}
 }

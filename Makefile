@@ -10,6 +10,8 @@ GOLANGCI_LINT_PATH=$$(go env GOPATH)/bin/golangci-lint
 GOLANGCI_LINT_VERSION=1.59.0
 
 MIGRATION_FOLDER_PATH=app/gateway/postgres/migrations
+GOLANG_MIGRATE_PATH=$$(go env GOPATH)/bin/golang-migrate
+GOLANG_MIGRATE_VERSION=4.17.1
 
 build:
 	docker compose -f $(DOCKER_COMPOSE_FILE_BUILD) -p $(PROJECT) down --remove-orphans
@@ -42,5 +44,12 @@ migrate-down:
 	migrate -path $(MIGRATION_FOLDER_PATH) -database "postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable" down
 
 migrate-new:
+	@echo "==> Installing golang-migrate"
+ifeq (,$(findstring $(GOLANG_MIGRATE_VERSION),$(shell which $(GOLANG_MIGRATE_PATH) && eval $(GOLANG_MIGRATE_PATH) version)))
+	@echo "installing golang-migrate v$(GOLANG_MIGRATE_VERSION)"
+	@curl -L https://github.com/golang-migrate/migrate/releases/download/$(GOLANG_MIGRATE_VERSION)/migrate.$os-$arch.tar.gz | tar xvz | sh -s -- -b $$(go env GOPATH)/bin v$(GOLANG_MIGRATE_PATH)
+else
+	@echo "already installed: $(shell eval $(GOLANG_MIGRATE_PATH) version)"
+endif
 	@echo "==> Creating new migration files for ${name}..."
 	migrate create -ext sql -dir $(MIGRATION_FOLDER_PATH) -seq ${name}

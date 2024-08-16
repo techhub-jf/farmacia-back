@@ -45,4 +45,5 @@ func RegisterPrivateRoutes(
 	handler := New(cfg, useCase)
 	handler.DeliveriesSetup(router)
 	handler.ProductsSetup(router)
+	handler.TypesSetup(router)
 }

@@ -16,7 +16,7 @@ func (r *TypeRepository) Create(ctx context.Context, input usecase.CreateTypeInp
 	query := `
 		INSERT INTO type (reference, label)
 		VALUES ($1, $2)
-		RETURNING id, label, created_at;
+		RETURNING id, reference, created_at;
 	`
 
 	args := []interface{}{
@@ -32,7 +32,8 @@ func (r *TypeRepository) Create(ctx context.Context, input usecase.CreateTypeInp
 
 	t := entity.Type{}
 
-	err := row.Scan(&t.Label)
+	err := row.Scan(&t.ID,
+		&t.Reference, &t.CreatedAt)
 	if err != nil {
 		return entity.Type{}, fmt.Errorf("%s: %w", operation, err)
 	}

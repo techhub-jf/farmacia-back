@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/go-chi/chi"
 
+	"github.com/techhub-jf/farmacia-back/app/domain/erring"
 	"github.com/techhub-jf/farmacia-back/app/domain/usecase"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/rest"
@@ -22,6 +24,7 @@ const (
 func (h *Handler) TypesSetup(router chi.Router) {
 	router.Route(typesPattern, func(r chi.Router) {
 		r.Get("/", h.GetTypes())
+		r.Post("/", h.CreateType())
 	})
 }
 
@@ -48,6 +51,7 @@ func (h *Handler) GetTypes() http.HandlerFunc {
 		})
 		if err != nil {
 			resp := response.InternalServerError(err)
+			fmt.Println(err)
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 			return
@@ -87,6 +91,18 @@ func (h *Handler) CreateType() http.HandlerFunc {
 		useCaseInput := usecase.CreateTypeInput{}
 		useCaseInput.Type.Label = typeBody.Label
 
+		_, err = h.useCase.GetTypeByLabel(req.Context(), usecase.GetTypeByLabelInput{
+			Label: useCaseInput.Type.Label,
+		})
+
+		if err == nil {
+			resp := response.BadRequest(erring.ErrLabelExists, erring.ErrLabelExists.Message)
+			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+
+		}
+
 		var reference string
 
 		for {
@@ -118,7 +134,7 @@ func (h *Handler) CreateType() http.HandlerFunc {
 		}
 
 		payload := schema.CreateTypeResponse{}
-		payload.Delivery = schema.ConvertTypeToCreateResponse(data.Type)
+		payload.Type = schema.ConvertTypeToCreateResponse(data.Type)
 
 		resp = response.Created(payload)
 		rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck

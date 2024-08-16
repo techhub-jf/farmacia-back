@@ -20,7 +20,9 @@ func (r *TypeRepository) ListAll(ctx context.Context, pagination dto.Pagination,
 	query := `SELECT 
 				count(*) OVER() AS total_count,
 				id,
+				reference,
 				label,
+				created_at
 		FROM type
 		WHERE deleted_at IS NULL `
 
@@ -58,6 +60,7 @@ func (r *TypeRepository) ListAll(ctx context.Context, pagination dto.Pagination,
 			&t.ID,
 			&t.Reference,
 			&t.Label,
+			&t.CreatedAt,
 		)
 		if err != nil {
 			return nil, 0, fmt.Errorf("%s: %w", operation, err)
@@ -71,6 +74,38 @@ func (r *TypeRepository) ListAll(ctx context.Context, pagination dto.Pagination,
 	}
 
 	return types, totalRecords, nil
+}
+
+func (r *TypeRepository) GetByLabel(ctx context.Context, label string) (entity.Type, error) {
+	const (
+		operation = "Repository.TypeRepository.GetByLabel"
+	)
+
+	query := `
+		SELECT 
+			id,
+			reference,
+			label,
+			created_at,
+			updated_at
+		FROM type
+		WHERE label = $1;
+	`
+
+	var t entity.Type
+
+	err := r.Client.Pool.QueryRow(ctx, query, label).Scan(
+		&t.ID,
+		&t.Reference,
+		&t.Label,
+		&t.CreatedAt,
+		&t.UpdatedAt,
+	)
+	if err != nil {
+		return entity.Type{}, fmt.Errorf("%s: %w", operation, err)
+	}
+
+	return t, nil
 }
 
 func (r *TypeRepository) GetByReference(ctx context.Context, reference string) (entity.Type, error) {

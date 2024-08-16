@@ -15,8 +15,9 @@ type ListTypesRequest struct {
 type ListTypesRequestPagination = dto.Pagination
 
 var validSortTypesFields = map[string]bool{
-	"reference": true,
-	"label":     true,
+	"reference":  true,
+	"label":      true,
+	"created_at": true,
 }
 
 type CreateTypeRequest struct {
@@ -30,7 +31,7 @@ type CreatedTypeResponse struct {
 }
 
 type CreateTypeResponse struct {
-	Delivery CreatedTypeResponse `json:"type"`
+	Type CreatedTypeResponse `json:"type"`
 }
 
 func ValidateListTypesRequest(input ListTypesRequestPagination) error {
@@ -54,9 +55,10 @@ func ValidateListTypesRequest(input ListTypesRequestPagination) error {
 }
 
 type ListTypesResponse struct {
-	ID        uint   `json:"id"`
-	Reference string `json:"reference"`
-	Label     string `json:"label"`
+	ID        uint      `json:"id"`
+	Reference string    `json:"reference"`
+	Label     string    `json:"label"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type ListTypesOutput = PaginatedResponse[ListTypesResponse]
@@ -69,6 +71,7 @@ func ConvertTypesToListResponse(types []entity.Type) []ListTypesResponse {
 			ID:        t.ID,
 			Reference: t.Reference,
 			Label:     t.Label,
+			CreatedAt: t.CreatedAt,
 		})
 
 	}

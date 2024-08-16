@@ -156,6 +156,7 @@ func (h *Handler) UpdateType() http.HandlerFunc {
 
 		useCaseInput := usecase.UpdateTypeInput{}
 		id := chi.URLParam(req, "id")
+
 		idInt, err := strconv.ParseInt(id, 10, 32)
 		if err != nil {
 			resp := response.BadRequest(err, "Invalid ID")

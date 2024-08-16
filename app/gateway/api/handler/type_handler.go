@@ -25,6 +25,7 @@ func (h *Handler) TypesSetup(router chi.Router) {
 	router.Route(typesPattern, func(r chi.Router) {
 		r.Get("/", h.GetTypes())
 		r.Post("/", h.CreateType())
+		r.Put("/{id}", h.UpdateType())
 	})
 }
 
@@ -128,6 +129,60 @@ func (h *Handler) CreateType() http.HandlerFunc {
 		data, err := h.useCase.CreateType(req.Context(), useCaseInput)
 		if err != nil {
 			resp := response.InternalServerError(err)
+			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+
+		payload := schema.CreateTypeResponse{}
+		payload.Type = schema.ConvertTypeToCreateResponse(data.Type)
+
+		resp = response.Created(payload)
+		rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+	}
+}
+
+func (h *Handler) UpdateType() http.HandlerFunc {
+	return func(rw http.ResponseWriter, req *http.Request) {
+		typeBody := &schema.CreateTypeRequest{}
+		err := json.NewDecoder(req.Body).Decode(typeBody)
+
+		var resp *response.Response
+
+		if err != nil {
+			resp = response.InternalServerError(err)
+			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+
+		useCaseInput := usecase.UpdateTypeInput{}
+		id := chi.URLParam(req, "id")
+		idInt, err := strconv.ParseInt(id, 10, 32)
+		if err != nil {
+			resp := response.BadRequest(err, "Invalid ID")
+			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+		useCaseInput.Type.ID = idInt
+		useCaseInput.Type.Label = typeBody.Label
+
+		_, err = h.useCase.GetTypeByLabel(req.Context(), usecase.GetTypeByLabelInput{
+			Label: useCaseInput.Type.Label,
+		})
+
+		if err == nil {
+			resp := response.BadRequest(erring.ErrLabelExists, erring.ErrLabelExists.Message)
+			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+
+		}
+
+		data, err := h.useCase.UpdateType(req.Context(), useCaseInput)
+		if err != nil {
+			resp := response.BadRequest(erring.ErrTypeNotFound, erring.ErrTypeNotFound.Message)
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 			return

@@ -41,4 +41,5 @@ type typeRepository interface {
 	GetByReference(ctx context.Context, reference string) (entity.Type, error)
 	GetByLabel(ctx context.Context, label string) (entity.Type, error)
 	Create(ctx context.Context, t CreateTypeInput) (entity.Type, error)
+	Update(ctx context.Context, t UpdateTypeInput) (entity.Type, error)
 }

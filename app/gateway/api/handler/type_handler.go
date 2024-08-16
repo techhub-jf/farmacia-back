@@ -26,6 +26,7 @@ func (h *Handler) TypesSetup(router chi.Router) {
 		r.Get("/", h.GetTypes())
 		r.Post("/", h.CreateType())
 		r.Put("/{id}", h.UpdateType())
+		r.Delete("/{id}", h.DeleteType())
 	})
 }
 
@@ -192,6 +193,40 @@ func (h *Handler) UpdateType() http.HandlerFunc {
 		payload.Type = schema.ConvertTypeToCreateResponse(data.Type)
 
 		resp = response.Created(payload)
+		rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+	}
+}
+
+func (h *Handler) DeleteType() http.HandlerFunc {
+	return func(rw http.ResponseWriter, req *http.Request) {
+		id := chi.URLParam(req, "id")
+
+		idInt, err := strconv.ParseInt(id, 10, 32)
+		if err != nil {
+			resp := response.BadRequest(err, "Invalid ID")
+			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+
+		err = h.useCase.DeleteType(req.Context(), usecase.DeleteTypeInput{
+			ID: int32(idInt),
+		})
+		if err != nil {
+			if strings.Contains(err.Error(), "no rows in result set") {
+				resp := response.NotFound(erring.ErrTypeNotFound, erring.ErrTypeNotFound.Message)
+				rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+				return
+			}
+
+			resp := response.InternalServerError(err)
+			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
+
+			return
+		}
+
+		resp := response.NoContent()
 		rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 	}
 }

@@ -32,7 +32,7 @@ else
 	@echo "already installed: $(shell eval $(GOLANGCI_LINT_PATH) version)"
 endif
 	@echo "==> Running golangci-lint"
-	@$(GOLANGCI_LINT_PATH) run -c ./.golangci.yml
+	@$(GOLANGCI_LINT_PATH) run -c ./.golangci.yml --fix
 
 encrypt:
 	go run ./tools/encrypt.go --word=$(filter-out $@,$(MAKECMDGOALS))

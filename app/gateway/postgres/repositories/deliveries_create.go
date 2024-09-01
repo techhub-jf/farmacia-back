@@ -17,7 +17,12 @@ func (r *DeliveriesRepository) Create(ctx context.Context, input usecase.CreateD
 	if err != nil {
 		return entity.Delivery{}, fmt.Errorf("%s: %w", operation, err)
 	}
-	defer tx.Rollback(ctx)
+
+	defer func() {
+		if rollbackErr := tx.Rollback(ctx); rollbackErr != nil && err == nil {
+			err = rollbackErr
+		}
+	}()
 
 	query := `
 		INSERT INTO deliveries (reference, client_id, qty, unit_id)

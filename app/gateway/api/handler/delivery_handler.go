@@ -124,7 +124,6 @@ func (h *Handler) CreateDelivery() http.HandlerFunc {
 		data, err := h.useCase.CreateDelivery(req.Context(), useCaseInput)
 		if err != nil {
 			resp := response.InternalServerError(err)
-			print(err.Error())
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 			return

@@ -1,3 +1,3 @@
 BEGIN;
-DROP TABLE IF EXISTS delivery;
+DROP TABLE IF EXISTS deliveries;
 COMMIT;

@@ -95,9 +95,9 @@ func (h *Handler) CreateDelivery() http.HandlerFunc {
 
 		useCaseInput := usecase.CreateDeliveryInput{}
 		useCaseInput.Delivery.Qty = deliveryBody.Qty
-		useCaseInput.Delivery.MedicineID = deliveryBody.MedicineID
 		useCaseInput.Delivery.UnitID = deliveryBody.UnitID
 		useCaseInput.Delivery.ClientID = deliveryBody.ClientID
+		useCaseInput.Delivery.ProductIDs = deliveryBody.ProductIDs
 
 		var reference string
 
@@ -124,6 +124,7 @@ func (h *Handler) CreateDelivery() http.HandlerFunc {
 		data, err := h.useCase.CreateDelivery(req.Context(), useCaseInput)
 		if err != nil {
 			resp := response.InternalServerError(err)
+			print(err.Error())
 			rest.SendJSON(rw, resp.Status, resp.Payload, resp.Headers) //nolint:errcheck
 
 			return

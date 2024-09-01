@@ -13,27 +13,41 @@ func (r *DeliveriesRepository) Create(ctx context.Context, input usecase.CreateD
 		operation = "Repository.DeliveriesRepository.Create"
 	)
 
+	tx, err := r.Client.Pool.Begin(ctx)
+	if err != nil {
+		return entity.Delivery{}, fmt.Errorf("%s: %w", operation, err)
+	}
+	defer tx.Rollback(ctx)
+
 	query := `
-		INSERT INTO deliveries (reference,  client_id,  medicine_id, qty, unit_id)
-		VALUES ($1, $2, $3, $4, $5)
+		INSERT INTO deliveries (reference, client_id, qty, unit_id)
+		VALUES ($1, $2, $3, $4)
 		RETURNING id, reference, created_at;
 	`
 
 	args := []interface{}{
 		input.Delivery.Reference, input.Delivery.ClientID,
-		input.Delivery.MedicineID, input.Delivery.Qty, input.Delivery.UnitID,
+		input.Delivery.Qty, input.Delivery.UnitID,
 	}
 
-	row := r.Client.Pool.QueryRow(
-		ctx,
-		query,
-		args...,
-	)
+	var delivery entity.Delivery
 
-	delivery := entity.Delivery{}
+	err = tx.QueryRow(ctx, query, args...).Scan(&delivery.ID, &delivery.Reference, &delivery.CreatedAt)
+	if err != nil {
+		return entity.Delivery{}, fmt.Errorf("%s: %w", operation, err)
+	}
 
-	err := row.Scan(&delivery.ID,
-		&delivery.Reference, &delivery.CreatedAt)
+	query = `
+		INSERT INTO delivery_product (delivery_id, product_id)
+		SELECT $1, unnest($2::int[]);
+	`
+
+	_, err = tx.Exec(ctx, query, delivery.ID, input.Delivery.ProductIDs)
+	if err != nil {
+		return entity.Delivery{}, fmt.Errorf("%s: %w", operation, err)
+	}
+
+	err = tx.Commit(ctx)
 	if err != nil {
 		return entity.Delivery{}, fmt.Errorf("%s: %w", operation, err)
 	}

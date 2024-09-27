@@ -19,6 +19,9 @@ start:
 	docker compose -f $(DOCKER_COMPOSE_FILE_LOCAL) -p $(PROJECT) down --remove-orphans
 	docker compose -f $(DOCKER_COMPOSE_FILE_LOCAL) -p $(PROJECT) up --remove-orphans
 
+clean:
+	docker compose -f $(DOCKER_COMPOSE_FILE_LOCAL) -p $(PROJECT) down --volumes --remove-orphans
+
 mock:
 
 lint:

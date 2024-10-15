@@ -95,9 +95,9 @@ func (h *Handler) CreateDelivery() http.HandlerFunc {
 
 		useCaseInput := usecase.CreateDeliveryInput{}
 		useCaseInput.Delivery.Qty = deliveryBody.Qty
-		useCaseInput.Delivery.MedicineID = deliveryBody.MedicineID
 		useCaseInput.Delivery.UnitID = deliveryBody.UnitID
 		useCaseInput.Delivery.ClientID = deliveryBody.ClientID
+		useCaseInput.Delivery.ProductIDs = deliveryBody.ProductIDs
 
 		var reference string
 

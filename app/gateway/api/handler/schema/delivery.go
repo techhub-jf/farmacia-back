@@ -30,8 +30,8 @@ type CreateDeliveryResponse struct {
 type CreateDeliveryRequest struct {
 	Qty        int32 `json:"qty"`
 	ClientID   int32 `json:"client_id"`
-	MedicineID int32 `json:"medicine_id"`
 	UnitID     int32 `json:"unit_id"`
+	ProductIDs []int `json:"product_ids"`
 }
 
 type DeliveryResponse struct {
@@ -60,12 +60,12 @@ func ValidateCreateDeliveryRequest(input *CreateDeliveryRequest) error {
 		return errors.New("client_id must be provided")
 	}
 
-	if input.MedicineID == 0 {
-		return errors.New("medicine_id must be provided")
-	}
-
 	if input.UnitID == 0 {
 		return errors.New("unit_id must be provided")
+	}
+
+	if len(input.ProductIDs) == 0 {
+		return errors.New("product_ids must be provided")
 	}
 
 	return nil

@@ -1,0 +1,3 @@
+BEGIN;
+ALTER TABLE deliveries ADD COLUMN medicine_id BIGINT NOT NULL;
+COMMIT;

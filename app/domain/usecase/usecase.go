@@ -15,6 +15,7 @@ type UseCase struct {
 	ClientsRepository    clientsRepository
 	DeliveriesRepository deliveriesRepository
 	ProductsRepository   productsRepository
+	TypeRepository       typeRepository
 }
 
 type accountsRepository interface {
@@ -34,4 +35,12 @@ type clientsRepository interface {
 }
 type productsRepository interface {
 	ListAll(ctx context.Context, pagination dto.Pagination, filter string) ([]entity.Product, int, error)
+}
+type typeRepository interface {
+	ListAll(ctx context.Context, pagination dto.Pagination, filter string) ([]entity.Type, int, error)
+	GetByReference(ctx context.Context, reference string) (entity.Type, error)
+	GetByLabel(ctx context.Context, label string) (entity.Type, error)
+	Create(ctx context.Context, t CreateTypeInput) (entity.Type, error)
+	Update(ctx context.Context, t UpdateTypeInput) (entity.Type, error)
+	Delete(ctx context.Context, id int32) error
 }

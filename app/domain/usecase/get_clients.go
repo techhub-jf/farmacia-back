@@ -2,15 +2,15 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/techhub-jf/farmacia-back/app/domain/erring"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api/handler/schema"
 )
 
-func (u UseCase) GetClients(ctx context.Context, cqp schema.ClientQueryParams) ([]schema.ClientResponse, error) {
+func (u *UseCase) GetClients(ctx context.Context, cqp schema.ClientQueryParams) ([]schema.ClientResponse, error) {
 	clients, err := u.ClientsRepository.GetClients(ctx, cqp)
 	if err != nil {
-		return []schema.ClientResponse{}, erring.ErrGettingClientsFromDB
+		return []schema.ClientResponse{}, fmt.Errorf("error getting clients: %w", err)
 	}
 
 	clientListOutput := make([]schema.ClientResponse, 0)

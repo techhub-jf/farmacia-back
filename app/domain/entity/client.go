@@ -12,7 +12,7 @@ type Client struct {
 	Phone         string    `json:"phone"`
 	Cep           string    `json:"cep"`
 	Address       string    `json:"address"`
-	AddressNumber string    `json:"address_number"`
+	AddressNumber int       `json:"address_number"`
 	District      string    `json:"district"`
 	City          string    `json:"city"`
 	State         string    `json:"state"`

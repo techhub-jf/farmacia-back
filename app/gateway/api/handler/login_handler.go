@@ -24,6 +24,17 @@ func (h *Handler) LoginSetup(router chi.Router) {
 	})
 }
 
+// @Summary User Login
+// @Description Authenticates a user and returns a JWT token
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param loginRequest body schema.LoginRequest true "Login Credentials"
+// @Success 200 {object} schema.LoginResponse "Login successful"
+// @Failure 400 "Bad Request"
+// @Failure 401 "Unauthorized"
+// @Failure 500 "Internal Server Error"
+// @Router /api/v1/farmacia-tech/auth [post]
 func (h *Handler) login() http.HandlerFunc {
 	return func(rw http.ResponseWriter, req *http.Request) {
 		creds := &schema.LoginRequest{}

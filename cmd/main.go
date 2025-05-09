@@ -2,6 +2,10 @@ package main
 
 import (
 	"context"
+	"embed"
+
+	"github.com/techhub-jf/farmacia-back/app/gateway/postgres"
+
 	"errors"
 	"fmt"
 	"log"
@@ -11,17 +15,29 @@ import (
 	"os/signal"
 	"syscall"
 
-	"golang.org/x/sync/errgroup"
-
+	"github.com/go-chi/chi"
+	"github.com/joho/godotenv"
+	_ "github.com/swaggo/http-swagger/example/go-chi/docs"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 	"github.com/techhub-jf/farmacia-back/app"
 	"github.com/techhub-jf/farmacia-back/app/config"
 	"github.com/techhub-jf/farmacia-back/app/gateway/api"
-	"github.com/techhub-jf/farmacia-back/app/gateway/postgres"
+	"golang.org/x/sync/errgroup"
 )
 
-func main() {
-	ctx := context.Background()
+//go:embed docs/swagger.json
+var swaggerJSON embed.FS
 
+// @title Farmacia-back API
+// @version 1.0
+
+// @host localhost:8000
+func main() {
+	errCfg := godotenv.Load()
+	if errCfg != nil {
+		log.Fatal("Error loading .env file")
+	}
+	ctx := context.Background()
 	cfg, err := config.New()
 	if err != nil {
 		log.Fatalf("failed to load configurations: %v", err)
@@ -39,11 +55,34 @@ func main() {
 		log.Fatalf("failed to start application: %v", err)
 	}
 
+	// Create a chi router
+	r := chi.NewRouter()
+
+	// Set up API routes
+
+	// Mount your API handler onto the router
+	api := api.New(cfg, appl.UseCase)
+	r.Mount("/", api.Handler)
+
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8000/swagger/doc.json"), // URL to your Swagger JSON
+	))
+
+	// Serve embedded Swagger JSON file
+	r.Get("/swagger/doc.json", func(w http.ResponseWriter, r *http.Request) {
+		file, err := swaggerJSON.ReadFile("docs/swagger.json")
+		if err != nil {
+			http.Error(w, "Failed to read Swagger JSON", http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(file)
+	})
 	// Server
 	server := &http.Server{
 		Addr:         cfg.Server.Address,
 		BaseContext:  func(_ net.Listener) context.Context { return ctx },
-		Handler:      api.New(cfg, appl.UseCase).Handler,
+		Handler:      r,
 		ReadTimeout:  cfg.Server.ReadTimeout,
 		WriteTimeout: cfg.Server.WriteTimeout,
 	}
